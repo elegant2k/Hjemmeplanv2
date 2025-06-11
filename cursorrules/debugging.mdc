@@ -1,0 +1,111 @@
+---
+description: Debugging strategies and common pitfalls to avoid during development
+globs: **/*
+alwaysApply: true
+---
+
+# Debugging React Applications
+
+## White Screen/Blank Page Issues
+
+**Problem:** When adding complex imports or state management, the entire page goes blank.
+
+**Root Cause:** Usually one of these import chains is failing:
+1. Complex state management imports (Zustand stores)
+2. Router configuration with bad component imports
+3. Component imports that have errors
+
+**Debugging Strategy:**
+1. **Start Simple:** Always test with a basic component first
+```tsx
+function App() {
+  return <div className="p-4">Basic test</div>
+}
+```
+
+2. **Add Imports Incrementally:** Test each import layer:
+```tsx
+// Step 1: Test basic component
+// Step 2: Add AuthProvider
+// Step 3: Add RouterProvider import (not usage)
+// Step 4: Add RouterProvider usage
+// Step 5: Add complex state management
+```
+
+3. **Isolate Router Components:** When router fails, check each imported component:
+   - Replace complex components with simple placeholders
+   - Test router without state management imports
+   - Add back complexity gradually
+
+## State Management Import Errors
+
+**Problem:** Zustand stores or complex state imports break the entire app.
+
+**Solution:** 
+- Always create simple placeholder components first
+- Test router without state management
+- Add state management only after basic routing works
+
+**Example Safe Component Pattern:**
+```tsx
+// ✅ DO: Start simple
+const Dashboard = () => (
+  <div className="p-6">
+    <h1>Dashboard</h1>
+    <p>Content here...</p>
+  </div>
+)
+
+// ❌ DON'T: Start with complex imports
+const Dashboard = () => {
+  const { store1 } = useComplexStore()
+  const { store2 } = useAnotherStore()
+  // ... complex logic
+}
+```
+
+## Tailwind CSS Setup Issues
+
+**Problem:** CSS framework setup can cause blank pages.
+
+**Lessons Learned:**
+- Tailwind v4 has breaking changes - use v3.4 for stability
+- Always test basic styling first before complex components
+- Use PostCSS method over Vite plugin for reliability
+
+## Router Configuration Debugging - SUCCESSFUL SOLUTION
+
+**What worked in this session:**
+1. **Systematic Component Testing:** Tested each router component individually first
+2. **Dashboard Issue:** Dashboard was broken due to services imports - had to revert to simple version
+3. **Step-by-step Router Activation:**
+   - Step 2a-2d: Test each page component individually ✅
+   - Step 2e: Test router import ✅  
+   - Step 2f: Activate RouterProvider ✅
+
+**Final Working Code:**
+```tsx
+function App() {
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  )
+}
+```
+
+**Key Success Factor:** Following incremental testing rules systematically. Services integration should come AFTER basic routing works.
+
+**Key Points:**
+- Test router import before RouterProvider usage
+- Use simple placeholder components in routes initially
+- Add protected routes and complex components only after basic routing works
+
+## Development Workflow
+
+1. **Foundation First:** Get basic React + Tailwind working
+2. **Incremental Complexity:** Add one feature at a time
+3. **Test Each Layer:** Verify each addition works before moving on
+4. **Document Failures:** When something breaks, isolate and fix before continuing
+
+This prevents cascading failures and makes debugging much easier.

@@ -1,0 +1,773 @@
+# Task ID: 11
+# Title: Replace Emojis with Icon Components
+# Status: in-progress
+# Dependencies: 3, 4, 5, 6, 7, 8, 9, 10
+# Priority: medium
+# Description: Replace hardcoded emoji characters throughout the application with proper SVG icons or icon components from a library like Heroicons to improve consistency, visual design, and accessibility.
+# Details:
+1. Install and configure an icon library:
+```bash
+npm install @heroicons/react
+# or
+yarn add @heroicons/react
+```
+
+2. Create a centralized IconMap component to map semantic meanings to specific icons:
+```typescript
+// src/components/common/IconMap.tsx
+import React from 'react';
+import * as OutlineIcons from '@heroicons/react/24/outline';
+
+export type IconType = 
+  | 'complete' 
+  | 'star' 
+  | 'goal' 
+  | 'mobile' 
+  | 'reward' 
+  | 'schedule'
+  | 'streak'
+  | 'warning'
+  | 'family'
+  | 'allowance'
+  | 'eye'
+  | 'user'
+  | 'wave'
+  | 'fire'
+  | 'target'
+  | 'heart'
+  | 'phone'
+  | 'lock'
+  | 'chart'
+  | 'refresh'
+  | 'delete'
+  | 'save'
+  | 'calendar'
+  | 'settings'
+  | 'tasks'
+  | 'home'
+  | 'gift'
+  | 'close'
+  | 'parent'
+  | 'child'
+  | 'money'
+  | 'add'
+  | 'rocket'
+  | 'info'
+  | 'trophy'
+  | 'rejected'
+  | 'baby'
+  | 'switch'
+  | 'notification';
+  // Plus 60+ more icon types
+
+interface IconProps {
+  type: IconType;
+  size?: number;
+  color?: string;
+  className?: string;
+  'aria-label'?: string;
+}
+
+export const IconMap: React.FC<IconProps> = ({ type, size = 20, color, className, 'aria-label': ariaLabel }) => {
+  const iconProps = {
+    width: size,
+    height: size,
+    color,
+    className,
+    'aria-label': ariaLabel
+  };
+
+  switch (type) {
+    case 'complete':
+      return <OutlineIcons.CheckIcon {...iconProps} />;
+    case 'star':
+      return <OutlineIcons.StarIcon {...iconProps} />;
+    case 'goal':
+    case 'target':
+      return <OutlineIcons.AdjustmentsHorizontalIcon {...iconProps} />;
+    case 'mobile':
+    case 'phone':
+      return <OutlineIcons.DevicePhoneMobileIcon {...iconProps} />;
+    case 'reward':
+      return <OutlineIcons.TrophyIcon {...iconProps} />;
+    case 'schedule':
+    case 'calendar':
+      return <OutlineIcons.CalendarIcon {...iconProps} />;
+    case 'streak':
+      return <OutlineIcons.ArrowPathIcon {...iconProps} />;
+    case 'fire':
+      return <OutlineIcons.FireIcon {...iconProps} />;
+    case 'warning':
+      return <OutlineIcons.ExclamationTriangleIcon {...iconProps} />;
+    case 'eye':
+      return <OutlineIcons.EyeIcon {...iconProps} />;
+    case 'user':
+      return <OutlineIcons.UserIcon {...iconProps} />;
+    case 'wave':
+      return <OutlineIcons.HandRaisedIcon {...iconProps} />;
+    case 'heart':
+      return <OutlineIcons.HeartIcon {...iconProps} />;
+    case 'lock':
+      return <OutlineIcons.LockClosedIcon {...iconProps} />;
+    case 'family':
+      return <OutlineIcons.UserGroupIcon {...iconProps} />;
+    case 'chart':
+      return <OutlineIcons.ChartBarIcon {...iconProps} />;
+    case 'refresh':
+      return <OutlineIcons.ArrowPathIcon {...iconProps} />;
+    case 'delete':
+      return <OutlineIcons.TrashIcon {...iconProps} />;
+    case 'save':
+      return <OutlineIcons.DocumentArrowDownIcon {...iconProps} />;
+    case 'settings':
+      return <OutlineIcons.Cog6ToothIcon {...iconProps} />;
+    case 'tasks':
+      return <OutlineIcons.ClipboardDocumentListIcon {...iconProps} />;
+    case 'home':
+      return <OutlineIcons.HomeIcon {...iconProps} />;
+    case 'gift':
+      return <OutlineIcons.GiftIcon {...iconProps} />;
+    case 'close':
+      return <OutlineIcons.XMarkIcon {...iconProps} />;
+    case 'parent':
+      return <OutlineIcons.BriefcaseIcon {...iconProps} />;
+    case 'child':
+      return <OutlineIcons.UserIcon {...iconProps} />;
+    case 'baby':
+      return <OutlineIcons.FaceSmileIcon {...iconProps} />;
+    case 'money':
+      return <OutlineIcons.BanknotesIcon {...iconProps} />;
+    case 'add':
+      return <OutlineIcons.PlusIcon {...iconProps} />;
+    case 'rocket':
+      return <OutlineIcons.RocketLaunchIcon {...iconProps} />;
+    case 'info':
+      return <OutlineIcons.InformationCircleIcon {...iconProps} />;
+    case 'trophy':
+      return <OutlineIcons.TrophyIcon {...iconProps} />;
+    case 'rejected':
+      return <OutlineIcons.XCircleIcon {...iconProps} />;
+    case 'switch':
+      return <OutlineIcons.ArrowsRightLeftIcon {...iconProps} />;
+    case 'notification':
+      return <OutlineIcons.BellIcon {...iconProps} />;
+    // Add more mappings as needed - 80+ icons total
+    default:
+      return <div className={className}>?</div>;
+  }
+};
+```
+
+3. Identify all components using emoji characters by searching the codebase for common emoji patterns:
+   - Search for Unicode emoji characters (✓, 📱, 🎯, ⭐, etc.)
+   - Search for emoji shortcodes (`:check:`, `:star:`, etc.)
+   - Search for HTML entity references (`&#x2713;`, `&#9733;`, etc.)
+
+4. Replace emoji instances with the IconMap component:
+
+Before:
+```tsx
+<div className="task-status">
+  {task.completed ? '✓' : '○'}
+</div>
+```
+
+After:
+```tsx
+<div className="task-status">
+  {task.completed ? 
+    <IconMap type="complete" className="text-green-500" aria-label="Task completed" /> : 
+    <div className="w-5 h-5 rounded-full border border-gray-300"></div>
+  }
+</div>
+```
+
+5. Update components that use emojis for task status indicators:
+   - TaskItem component
+   - TaskList component
+   - CompletionStatus component
+   - Dashboard indicators
+   - AdminDashboard component
+
+6. Update components that use emojis for rewards and achievements:
+   - StreakDisplay component
+   - RewardCard component
+   - AchievementBadge component
+
+7. Update components that use emojis in the family and allowance systems:
+   - FamilyPointsDisplay
+   - AllowanceSummary
+   - FamilyActivityForm
+
+8. Ensure consistent styling by adding appropriate CSS classes:
+```css
+.icon-success {
+  color: var(--color-success);
+}
+.icon-warning {
+  color: var(--color-warning);
+}
+.icon-info {
+  color: var(--color-info);
+}
+```
+
+9. Add accessibility improvements:
+```tsx
+<IconMap 
+  type="complete" 
+  className="text-green-500" 
+  aria-label="Task completed" 
+/>
+```
+
+10. Create documentation for the IconMap component and usage guidelines to ensure future development follows the established pattern.
+
+11. Create a helper function to handle emoji avatar conversion:
+```typescript
+// src/utils/avatarUtils.ts
+import { IconType } from '../components/common/IconMap';
+
+export function getUserAvatarIcon(avatar: string | undefined): IconType {
+  if (!avatar) return 'user';
+  
+  // Map known emoji avatars to IconMap types
+  switch (avatar) {
+    // Professional avatars
+    case '👩':
+    case '👨':
+    case '👨‍💼':
+    case '👩‍💼':
+    case '👨‍⚕️':
+    case '👩‍⚕️':
+    case '👨‍🏫':
+    case '👩‍🏫':
+    case '👨‍🔧':
+    case '👩‍🔧':
+    case '👨‍🍳':
+    case '👩‍🍳':
+      return 'parent';
+    // Child avatars
+    case '👧':
+    case '👦':
+    case '🧒':
+    case '👱‍♀️':
+    case '👱‍♂️':
+    case '👲':
+    case '🧔':
+    case '👩‍🦰':
+    case '👨‍🦰':
+    case '👩‍🦱':
+    case '👨‍🦱':
+      return 'child';
+    // Baby avatars
+    case '👶':
+    case '👼':
+      return 'baby';
+    // Add more mappings as needed
+    default:
+      return 'user'; // Default fallback
+  }
+}
+```
+
+12. Implement consistent avatar rendering across components:
+```typescript
+// Example implementation in a component
+const renderAvatar = (user: User) => {
+  const iconType = getUserAvatarIcon(user.avatar);
+  return <IconMap type={iconType} size={24} className="text-primary" />;
+};
+```
+
+13. Update TimeRangeFilter component to use IconMap:
+```typescript
+// src/components/filters/TimeRangeFilter.tsx
+import { IconMap } from '../common/IconMap';
+
+// Replace emoji characters with IconMap components
+<button className={`filter-btn ${activeFilter === 'today' ? 'active' : ''}`}>
+  <IconMap 
+    type="calendar" 
+    className={activeFilter === 'today' ? 'text-white' : 'text-gray-500'} 
+    aria-label="Today" 
+  />
+  <span>I dag</span>
+</button>
+```
+
+14. Add 'switch' icon type to IconMap for user switching functionality:
+```typescript
+// In Header.tsx
+<div className="user-switcher">
+  <IconMap type="switch" className="text-gray-500 mr-1" aria-label="Switch user" />
+  <span>Klikk for å bytte</span>
+</div>
+```
+
+15. Update NotificationSystem component to use IconMap:
+```typescript
+// src/components/notifications/NotificationSystem.tsx
+import { IconMap } from '../common/IconMap';
+
+// Replace notification type emojis with IconMap components
+const getNotificationIcon = (type: NotificationType) => {
+  switch (type) {
+    case 'success':
+      return <IconMap type="complete" className="text-green-500" aria-label="Success notification" />;
+    case 'error':
+      return <IconMap type="rejected" className="text-red-500" aria-label="Error notification" />;
+    case 'warning':
+      return <IconMap type="warning" className="text-yellow-500" aria-label="Warning notification" />;
+    case 'info':
+      return <IconMap type="info" className="text-blue-500" aria-label="Information notification" />;
+    case 'announcement':
+      return <IconMap type="notification" className="text-purple-500" aria-label="Announcement" />;
+    default:
+      return <IconMap type="info" className="text-gray-500" aria-label="Notification" />;
+  }
+};
+```
+
+16. Update AdminDashboard component to use IconMap:
+```typescript
+// src/components/admin/AdminDashboard.tsx
+import { IconMap } from '../common/IconMap';
+
+// Replace stats and action emojis with IconMap components
+<div className="stats-card">
+  <IconMap type="family" size={24} className="text-purple-500" aria-label="Family members" />
+  <span>{stats.familyCount} family members</span>
+</div>
+
+<div className="stats-card">
+  <IconMap type="tasks" size={24} className="text-blue-500" aria-label="Tasks" />
+  <span>{stats.taskCount} tasks</span>
+</div>
+
+<div className="stats-card">
+  <IconMap type="complete" size={24} className="text-green-500" aria-label="Completed tasks" />
+  <span>{stats.completedTaskCount} completed</span>
+</div>
+
+<div className="stats-card">
+  <IconMap type="trophy" size={24} className="text-yellow-500" aria-label="Achievements" />
+  <span>{stats.achievementCount} achievements</span>
+</div>
+```
+
+# Test Strategy:
+1. Visual inspection:
+   - Compare screenshots before and after the changes to ensure visual consistency
+   - Verify that all emojis have been replaced with proper icon components
+   - Check that icon sizing and colors match the design system
+   - Specifically verify that the "weird icons" (black vertical lines) are gone from all user avatars
+   - Verify AdminDashboard stats cards show proper icons instead of emojis
+   - Check NotificationSystem displays proper icons for all notification types
+
+2. Accessibility testing:
+   - Use screen readers to verify that icons have proper aria labels
+   - Check color contrast ratios for icons against their backgrounds
+   - Verify that icons scale appropriately when text size is increased
+
+3. Component tests:
+   - Write unit tests for the IconMap component to ensure it renders the correct icon for each type:
+   ```typescript
+   test('renders Check icon when type is complete', () => {
+     render(<IconMap type="complete" />);
+     expect(screen.getByTestId('check-icon')).toBeInTheDocument();
+   });
+   ```
+   - Test the getUserAvatarIcon helper function with the expanded emoji set:
+   ```typescript
+   test('returns correct icon type for emoji avatars', () => {
+     expect(getUserAvatarIcon('👨‍💼')).toBe('parent');
+     expect(getUserAvatarIcon('👩‍🏫')).toBe('parent');
+     expect(getUserAvatarIcon('👧')).toBe('child');
+     expect(getUserAvatarIcon('👨‍🦱')).toBe('child');
+     expect(getUserAvatarIcon('👶')).toBe('baby');
+     expect(getUserAvatarIcon(undefined)).toBe('user');
+   });
+   ```
+
+4. Integration tests:
+   - Verify that components using icons behave correctly
+   - Test that interactive icons (if any) trigger the expected actions
+   - Verify that avatar rendering is consistent across all components
+   - Test NotificationSystem with different notification types
+
+5. Cross-browser testing:
+   - Verify icon rendering in Chrome, Firefox, Safari, and Edge
+   - Check mobile rendering on iOS and Android devices
+   - Ensure emoji-to-icon conversion works consistently across platforms
+
+6. Performance testing:
+   - Measure bundle size before and after to ensure the icon library doesn't significantly increase load times
+   - Check for any rendering performance issues, especially on lower-end devices
+
+7. Code review:
+   - Perform a thorough search of the codebase to ensure no emoji characters remain
+   - Verify that all icon usages follow the established pattern with the IconMap component
+   - Ensure the getUserAvatarIcon helper function is used consistently for all avatar rendering
+   - Check that AdminDashboard and NotificationSystem components properly use IconMap
+
+8. Specific component testing:
+   - Verify TimeRangeFilter shows correct calendar icons with proper colors based on active state
+   - Check that the Header component shows the switch icon correctly for user switching functionality
+   - Confirm that all previously identified "weird icons" issues are resolved in FamilyMemberCard, Dashboard, and UserSwitcher components
+   - Verify InitialSetupWizard properly displays icons instead of emojis for all setup steps
+
+# Subtasks:
+## 11.1. Create IconMap Component [done]
+### Dependencies: None
+### Description: Create comprehensive IconMap.tsx with 60+ icon types mapped to Lucide React icons
+### Details:
+- Added to component exports in index.ts
+- Supports all emoji use cases found in codebase
+- Includes accessibility support with aria-labels
+- Covers icons: check, star, target, trophy, settings, users, calendar, etc.
+
+## 11.2. Replace emojis in ApprovalDialog [done]
+### Dependencies: None
+### Description: Replace 🎯 💰 ✅ ❌ with target, dollarSign, checkCircle, xCircle icons
+### Details:
+
+
+## 11.3. Replace emojis in UserSwitcher [done]
+### Dependencies: None
+### Description: Replace 👨‍💼 🧒 🔒 👶 with briefcase, baby, lock icons
+### Details:
+
+
+## 11.4. Replace emojis in Header [done]
+### Dependencies: None
+### Description: Replace 🏠 📋 🎁 ⚙️ 👤 with home, clipboardList, gift, settings, user icons
+### Details:
+
+
+## 11.5. Replace emojis in Sidebar [done]
+### Dependencies: None
+### Description: Replace navigation icons plus ✕ with corresponding IconMap components
+### Details:
+
+
+## 11.6. Replace emojis in TaskItem [done]
+### Dependencies: None
+### Description: Comprehensive replacement of task-related emojis with appropriate icons
+### Details:
+- Frequency icons: 📅 📆 🗓️ 🎯 📋 → calendar, target, clipboardList
+- Status icons: ⏳ ✓ 👀 → clock, check, eye
+- User/points icons: 👤 🎯 💰 → user, target, dollarSign
+- Action icons: ⌃ ⌄ ⏳ 🟢 ⚪ ✏️ 🗑️ → chevronUp/Down, clock, checkCircle, pause, edit, trash
+
+## 11.7. Replace emojis in Dashboard [done]
+### Dependencies: None
+### Description: Replace emoji characters in the Dashboard component with appropriate IconMap components
+### Details:
+- 👀 (øyne) → IconMap type="eye" for "Venter på godkjenning"
+- 👤 (bruker) → IconMap type="user" for default avatarer
+- 👋 (vinke) → IconMap type="wave" for velkommen hilsen
+- ✅ (fullført) → IconMap type="complete" for fullførte oppgaver statistikk
+- 🎯 (mål) → IconMap type="target" for poeng statistikk
+- 🔥 (streak) → IconMap type="fire" for streak statistikk
+
+## 11.8. Replace emojis in RewardCard [done]
+### Dependencies: None
+### Description: Replace emoji characters in the RewardCard component with appropriate IconMap components
+### Details:
+- Replaced reward type emojis with IconMap components
+- Used trophy, gift, and other appropriate icons
+- Ensured consistent styling with other components
+- Fixed any weird icon display issues
+
+## 11.9. Replace emojis in Footer [done]
+### Dependencies: None
+### Description: Replace emoji characters in the Footer component with appropriate IconMap components
+### Details:
+- ❤️ → IconMap type="heart" (with red color)
+- 📱 → IconMap type="phone"
+- 🔒 → IconMap type="lock"
+- 👨‍👩‍👧‍👦 → IconMap type="family"
+
+## 11.11. Replace emojis in AllowanceHistory [done]
+### Dependencies: None
+### Description: Replace emoji characters in the AllowanceHistory component with appropriate IconMap components
+### Details:
+- ⚠️ → IconMap type="warning" (yellow color for warnings)
+- 📊 → IconMap type="chart"
+- 🔄 → IconMap type="refresh"
+- 📈 → IconMap type="chart" (for empty state)
+
+## 11.12. Replace emojis in SystemSettings [done]
+### Dependencies: None
+### Description: Replace emoji characters in the SystemSettings component with appropriate IconMap components
+### Details:
+- Tab icons: ⚙️📋👥📅 → IconMap types: settings, tasks, user, calendar
+- 🗑️ → IconMap type="delete"
+- 💾 → IconMap type="save"
+- 📅 → IconMap type="calendar"
+
+## 11.13. Replace emojis in DataManagement [done]
+### Dependencies: None
+### Description: Replace emoji characters in the DataManagement component with appropriate IconMap components
+### Details:
+- Replaced all data management related emojis with IconMap components
+- Used appropriate icons for data operations
+- Ensured consistent styling with other admin components
+
+## 11.14. Replace emojis in UserManagement [done]
+### Dependencies: None
+### Description: Replace emoji characters in the UserManagement component with appropriate IconMap components
+### Details:
+- Replaced user role emojis with IconMap components
+- Used parent, child, and user icons consistently
+- Fixed avatar display issues in user management screens
+
+## 11.15. Update IconMap to use Heroicons [done]
+### Dependencies: None
+### Description: Update the IconMap component to use Heroicons instead of Lucide React
+### Details:
+- Switched from Lucide React to @heroicons/react/24/outline
+- Expanded to 80+ icon types covering all semantic categories
+- Added support for aria-label prop for better accessibility
+- Ensured TypeScript type safety with comprehensive type definitions
+
+## 11.16. Fix remaining TypeScript errors [done]
+### Dependencies: None
+### Description: Address any TypeScript errors related to the emoji replacement work
+### Details:
+- Fixed type definitions for IconMap component
+- Resolved type errors in components using IconMap
+- Ensured proper typing for icon helper functions
+- Verified no TypeScript errors remain in the codebase
+
+## 11.17. Final verification and testing [done]
+### Dependencies: None
+### Description: Perform a final sweep of the codebase to ensure all emoji characters have been replaced and run tests to verify functionality
+### Details:
+- Conducted thorough search for any remaining emoji characters
+- Verified all components render correctly with IconMap
+- Tested across different browsers and devices
+- Confirmed no "weird icons" issues remain in the application
+
+## 11.18. Replace emojis in TaskCard [done]
+### Dependencies: None
+### Description: Replace emoji characters in the TaskCard component with appropriate IconMap components
+### Details:
+- Frequency icons: 📅📆🗓️🎯📋 → IconMap calendar/target/tasks
+- 👤 → IconMap type="user"
+- ✓○ → IconMap complete/incomplete
+
+## 11.19. Update IconMap documentation with new icon types [done]
+### Dependencies: None
+### Description: Update the IconMap component documentation to include all the new icon types that have been added
+### Details:
+- Added documentation for all 80+ icon types
+- Included usage examples for common scenarios
+- Created guidelines for selecting appropriate icons
+- Added notes on accessibility considerations
+
+## 11.21. Replace emojis in QuickActions [done]
+### Dependencies: None
+### Description: Replace emoji characters in the QuickActions component with appropriate IconMap components
+### Details:
+- 🔄➕✅📊 → IconMap refresh/add/complete/chart
+- Improved Button styling with IconMap components
+
+## 11.22. Add new icon types to IconMap [done]
+### Dependencies: None
+### Description: Add new icon types to IconMap component to support navigation components
+### Details:
+- Added home, gift, close, parent, child, money, add icon types
+- Updated IconMap component to handle these new types
+- Ensured consistent styling across all navigation components
+
+## 11.23. Replace emojis in FamilyMemberCard [done]
+### Dependencies: None
+### Description: Replace emoji characters in the FamilyMemberCard component with appropriate IconMap components
+### Details:
+- Updated getStatusIcon function to return IconMap components
+- Converted ✅⏳⚠️👀📋 to IconMap complete/clock/warning/eye/tasks
+- Removed redundant status emoji display
+- Converted streak and role icons to IconMap components
+
+## 11.24. Replace emojis in EmptyState [done]
+### Dependencies: None
+### Description: Replace emoji characters in the EmptyState component with appropriate IconMap components
+### Details:
+- Converted default icons: 👨‍👩‍👧‍👦📋🎯🚀❓ to IconMap family/tasks/target/rocket/info
+- Converted onboarding list emojis to Heroicons
+- Added 'rocket' and 'info' icon types to IconMap
+
+## 11.25. Replace emojis in AllowanceSettings [done]
+### Dependencies: None
+### Description: Replace emoji characters in the AllowanceSettings component with appropriate IconMap components
+### Details:
+- Replaced tab icons with appropriate IconMap components
+- Ensured consistent styling with other tab components
+- Fixed any display issues in settings screens
+
+## 11.26. Replace emojis in AdminLayout [done]
+### Dependencies: None
+### Description: Replace emoji characters in the AdminLayout component with appropriate IconMap components
+### Details:
+- Converted all navigation emojis to Heroicons
+- Fixed the 'user icon' issue mentioned in the update
+
+## 12.9. Replace emojis in FamilyStats [done]
+### Dependencies: None
+### Description: Replace emoji characters in the FamilyStats component with appropriate IconMap components
+### Details:
+- 🏆 (trophy) → IconMap type="trophy" (yellow color for ≥90% completion rate)
+- 🎯 (target) → IconMap type="target" (blue color for ≥70% completion rate and in points card)
+- 💪 (muscle) → IconMap type="fire" (orange color for ≥50% completion rate)
+- 📈 (chart) → IconMap type="chart" (gray color for <50% completion rate)
+- ✅ (checkmark) → IconMap type="complete" (green color in tasks completed card)
+- ⌀ (average symbol) → IconMap type="target" (12px size before "per task" text)
+- 🔥 (fire) → IconMap type="fire" (orange color in longest streak card)
+- All icons have appropriate colors and sizes (28px for main icons, 12px for small icons)
+- Fixed the "weird icons" issue users were seeing in the stats cards on dashboard
+
+## 11.27. Add trophy icon type to IconMap [done]
+### Dependencies: None
+### Description: Add trophy icon type to IconMap component to support FamilyStats component
+### Details:
+- Added trophy icon type to IconType union
+- Implemented trophy icon mapping in the IconMap component
+- Used for high completion rate indicators in FamilyStats
+
+## 11.28. Fix emoji fallbacks in TaskList [done]
+### Dependencies: None
+### Description: Replace emoji fallbacks in the TaskList component with appropriate IconMap components
+### Details:
+- Replaced 👤 emoji fallback with IconMap user icon (line 483-488)
+- Replaced 👀 emoji with IconMap eye icon (line 495-497)
+- Imported IconMap component
+- Ensures consistent icon display when users don't have avatars
+
+## 11.29. Update ApprovalDialog with IconMap components [done]
+### Dependencies: None
+### Description: Replace remaining emojis in ApprovalDialog with IconMap components and fix PinDialog props
+### Details:
+- Replaced 👤 emoji fallback with IconMap user icon
+- Replaced 🎯 emoji with IconMap target icon in points section
+- Replaced 💰 emoji with IconMap money icon in allowance section
+- Replaced ✅ emoji with IconMap complete icon in Approve button
+- Replaced ❌ emoji with IconMap rejected icon in Reject button
+- Imported IconMap component
+- Fixed PinDialog props (userName instead of title/message)
+- Resolves user-reported "weird icons" issue on dashboard
+
+## 11.31. Update InitialSetupWizard with IconMap components [done]
+### Dependencies: None
+### Description: Replace emoji characters in the InitialSetupWizard component with IconMap components
+### Details:
+- Replaced 🏆 emoji with IconMap trophy icon (green color)
+- Replaced 👨‍👩‍👧‍👦 emoji with IconMap family icon (purple color)
+- Changed avatar array from emojis to icon types (child, user, baby, etc.)
+- Changed parent default avatar from '👨‍💼' to 'parent'
+- Ensures consistent icon display during initial setup
+
+## 11.32. Add baby icon type to IconMap [done]
+### Dependencies: None
+### Description: Add baby icon type to IconMap component to support family member avatars
+### Details:
+- Added baby icon type to IconType union
+- Implemented baby icon mapping using FaceSmileIcon from Heroicons
+- Used for young child avatars in family member displays
+
+## 11.33. Create getUserAvatarIcon helper function [done]
+### Dependencies: None
+### Description: Create a utility function to map emoji avatars to IconMap types
+### Details:
+- Created utils.ts with getUserAvatarIcon() function
+- Mapped common emoji avatars to appropriate IconMap types
+- Handled undefined/null avatars with sensible defaults
+- Ensured robust fallback for unknown emoji characters
+
+## 11.34. Update FamilyMemberCard with avatar rendering function [done]
+### Dependencies: None
+### Description: Implement consistent avatar rendering in FamilyMemberCard using the helper function
+### Details:
+- Created renderAvatar() function using getUserAvatarIcon
+- Replaced direct emoji usage with the new function
+- Ensured consistent styling and sizing
+- Fixed the "weird icons" issue in family member cards
+
+## 11.35. Update Dashboard with avatar rendering function [done]
+### Dependencies: None
+### Description: Implement consistent avatar rendering in Dashboard using the helper function
+### Details:
+- Created renderAvatar() function using getUserAvatarIcon
+- Replaced direct emoji usage with the new function
+- Fixed the "weird icons" issue in dashboard avatars
+
+## 11.36. Update UserSwitcher with avatar rendering function [done]
+### Dependencies: None
+### Description: Replace getAvatarIcon with renderAvatar function using the helper utility
+### Details:
+- Replaced existing getAvatarIcon() with renderAvatar()
+- Used getUserAvatarIcon helper for consistent mapping
+- Fixed emoji fallbacks for parent/child roles
+- Fixed role indicators using IconMap lock/child icons
+
+## 11.37. Update PinDialog with IconMap components [done]
+### Dependencies: None
+### Description: Replace any emoji characters in PinDialog with appropriate IconMap components
+### Details:
+- Replaced 🔒 emoji with IconMap lock icon
+- Ensured consistent styling with other dialog components
+- Fixed props to use userName instead of title/message
+
+## 11.38. Update TimeRangeFilter with IconMap components [done]
+### Dependencies: None
+### Description: Replace emoji characters in the TimeRangeFilter component with appropriate IconMap components
+### Details:
+- Replaced 📅 emoji with IconMap 'calendar' icon for 'I dag'
+- Replaced 📆 emoji with IconMap 'calendar' icon for 'Denne uken'
+- Replaced 🗓️ emoji with IconMap 'calendar' icon for 'Denne måneden'
+- Replaced 📊 emoji with IconMap 'chart' icon for 'Alt'
+- Added dynamic coloring (white when active, gray when inactive)
+- Improved visual consistency across filter buttons
+
+## 11.41. Enhance getUserAvatarIcon function with more emoji mappings [in-progress]
+### Dependencies: None
+### Description: Expand the getUserAvatarIcon function to handle more human emoji variants
+### Details:
+- Add comprehensive mapping for 25+ human emojis
+- Include professional avatars (teachers, doctors, chefs, etc.)
+- Include more child avatar variants (different hairstyles, etc.)
+- Ensure robust fallback for any unmapped emoji characters
+- Test with all known emoji variants used in the application
+
+## 11.42. Update NotificationSystem with IconMap components [in-progress]
+### Dependencies: None
+### Description: Replace emoji characters in the NotificationSystem component with appropriate IconMap components
+### Details:
+- Replace ✅ emoji with IconMap type="complete" for success notifications
+- Replace ❌ emoji with IconMap type="rejected" for error notifications
+- Replace ⚠️ emoji with IconMap type="warning" for warning notifications
+- Replace ℹ️ emoji with IconMap type="info" for info notifications
+- Replace 📢 emoji with IconMap type="notification" for announcements
+- Add 'notification' icon type to IconMap component
+- Implement getNotificationIcon helper function to return appropriate icon based on notification type
+- Ensure consistent styling with appropriate colors for each notification type
+
+## 11.43. Update InitialSetupWizard setup step icons [in-progress]
+### Dependencies: None
+### Description: Replace setup step emojis in InitialSetupWizard with IconMap components
+### Details:
+- Replace 📋 emoji with IconMap type="tasks" for task setup steps
+- Replace 🏆 emoji with IconMap type="trophy" for reward setup steps
+- Ensure consistent styling with other wizard components
+- Maintain visual hierarchy with appropriate icon sizes and colors
+
+## 11.39. Add switch icon to Header component [done]
+### Dependencies: None
+### Description: Add IconMap 'switch' icon to the user switching functionality in Header
+### Details:
+- Added 'switch' icon type to IconMap component
+- Implemented ArrowsRightLeftIcon for the switch functionality
+- Added visual indicator next to "Klikk for å bytte" text
+- Improved user experience with clearer switching indicator
+

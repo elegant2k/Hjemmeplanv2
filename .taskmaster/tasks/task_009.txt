@@ -1,0 +1,102 @@
+# Task ID: 9
+# Title: Develop Allowance System
+# Status: done
+# Dependencies: 6
+# Priority: low
+# Description: Implement the system to track monetary values for tasks and calculate weekly allowance based on completed tasks.
+# Details:
+1. Extend Task model with allowance fields:
+```typescript
+interface Task {
+  // Existing fields
+  allowanceAmount?: number; // Money value in local currency
+  allowanceEnabled: boolean; // Whether this task contributes to allowance
+}
+```
+
+2. Create AllowanceSummary component for weekly overview
+3. Implement AllowanceHistory for tracking payments over time
+4. Create AllowanceSettings for parents to configure system
+5. Implement weekly calculation service:
+```typescript
+const calculateWeeklyAllowance = (userId: string, startDate: Date, endDate: Date) => {
+  const completedTasks = completionService.getCompletedTasks(userId, startDate, endDate);
+  
+  return completedTasks.reduce((total, task) => {
+    if (task.allowanceEnabled && task.allowanceAmount) {
+      return total + task.allowanceAmount;
+    }
+    return total;
+  }, 0);
+};
+```
+
+6. Add payment tracking (mark as paid functionality)
+7. Create allowance reports for parents
+8. Implement allowance goals/saving for children
+
+# Test Strategy:
+1. Test allowance calculation with various task configurations
+2. Verify weekly summaries are accurate
+3. Test payment tracking functionality
+4. Verify allowance history displays correctly
+5. Test allowance settings configuration
+6. Verify reports generate correctly
+7. Test edge cases (partial weeks, missed tasks)
+
+# Subtasks:
+## 1. Extend Task Model with Allowance Fields [done]
+### Dependencies: None
+### Description: Update the Task model to include allowance-related fields and modify existing task creation/editing interfaces to support these new fields.
+### Details:
+1. Add allowanceAmount (number, optional) and allowanceEnabled (boolean) to the Task interface
+2. Update database schema or data model to include these new fields
+3. Modify task creation and editing forms to include toggles for allowance enablement and amount input
+4. Add validation to ensure allowanceAmount is a positive number when allowanceEnabled is true
+5. Update any task display components to show allowance information when relevant
+
+## 2. Implement Weekly Allowance Calculation Service [done]
+### Dependencies: 9.1
+### Description: Create a service that calculates the total allowance earned based on completed tasks within a specified date range.
+### Details:
+1. Implement the calculateWeeklyAllowance function as specified in the task description
+2. Add functionality to filter tasks by date range and user
+3. Ensure proper handling of tasks with missing allowance values
+4. Add caching mechanism for performance optimization
+5. Include functionality to identify which specific tasks contributed to the total
+6. Implement error handling for edge cases
+
+## 3. Create AllowanceSummary Component [done]
+### Dependencies: 9.1, 9.2
+### Description: Develop a UI component that displays the current week's allowance summary, showing completed tasks with allowance values and total earned.
+### Details:
+1. Create a new React component AllowanceSummary
+2. Display the current week's date range
+3. List completed tasks that contribute to allowance with their individual values
+4. Show total allowance earned for the week
+5. Add visual indicators for paid vs unpaid allowance
+6. Include refresh functionality to update calculations
+7. Make component responsive for different screen sizes
+
+## 4. Implement AllowanceHistory and Payment Tracking [done]
+### Dependencies: 9.2, 9.3
+### Description: Create a system to track allowance payment history and implement functionality to mark allowances as paid.
+### Details:
+1. Design and implement an AllowancePayment data model with fields for amount, date, userId, status, and associated tasks
+2. Create UI for parents to view pending payments and mark them as paid
+3. Implement the AllowanceHistory component to display past payments
+4. Add filtering and sorting options for payment history
+5. Implement export functionality for payment records
+6. Create notifications for new payments
+
+## 5. Develop AllowanceSettings and Reports [done]
+### Dependencies: 9.4
+### Description: Create configuration options for parents to manage the allowance system and generate reports on allowance history.
+### Details:
+1. Implement AllowanceSettings component with options for default allowance values, payment schedules, and system enablement
+2. Create allowance reports with visualizations of earnings over time
+3. Implement allowance goals/saving functionality for children
+4. Add parental controls for approving/rejecting specific task allowances
+5. Create export options for reports in different formats (PDF, CSV)
+6. Implement notification settings for allowance-related events
+

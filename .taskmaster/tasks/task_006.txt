@@ -1,0 +1,102 @@
+# Task ID: 6
+# Title: Implement Task Completion and Approval Workflow
+# Status: done
+# Dependencies: 4, 5
+# Priority: high
+# Description: Create the two-step process where children mark tasks as completed and parents approve with PIN verification.
+# Details:
+1. Enhance TaskItem component with completion toggle:
+```typescript
+const handleTaskCompletion = async (taskId: string) => {
+  // Create completion record
+  await completionService.createCompletion({
+    taskId,
+    userId: currentUser.id,
+    completedAt: new Date(),
+    status: 'pending'
+  });
+  
+  // Update UI state
+  updateTaskStatus(taskId, 'pending');
+};
+```
+
+2. Create PendingApprovals component for parent dashboard
+3. Implement PIN verification dialog for parents:
+```typescript
+const verifyParentPin = (pin: string) => {
+  return userService.verifyPin(currentFamily.id, pin);
+};
+```
+
+4. Add approve/reject functionality with comments
+5. Implement visual feedback for pending/approved/rejected states
+6. Create notifications for pending approvals
+7. Add batch approval functionality for parents
+8. Implement history view of completed tasks
+9. Create automatic streak updates on approval
+
+# Test Strategy:
+1. Test task completion by children
+2. Verify pending approval status displays correctly
+3. Test PIN verification for parents
+4. Verify approval and rejection workflows
+5. Test streak updates after approval
+6. Verify notifications for pending approvals
+7. Test history view with different date ranges
+8. Verify batch approval functionality
+
+# Subtasks:
+## 1. Enhance TaskItem Component with Completion Toggle [done]
+### Dependencies: None
+### Description: Modify the TaskItem component to allow children to mark tasks as completed, which will set the task status to 'pending' until parent approval.
+### Details:
+1. Add a completion checkbox/button to the TaskItem component
+2. Implement the handleTaskCompletion function to create a completion record in the database
+3. Update the UI to reflect the 'pending' status with appropriate visual indicators
+4. Add optimistic UI updates while the completion is being saved
+5. Handle error cases if the completion record fails to save
+
+## 2. Create PendingApprovals Component for Parent Dashboard [done]
+### Dependencies: None
+### Description: Develop a component that displays all tasks pending approval for a parent, allowing them to see what needs their attention.
+### Details:
+1. Create a new PendingApprovals component that fetches all tasks with 'pending' status for the current family
+2. Implement filtering and sorting options (by child, date, etc.)
+3. Display task details including child name, task description, and completion time
+4. Add approve/reject action buttons for each pending task
+5. Implement pagination or infinite scrolling if there are many pending tasks
+
+## 3. Implement PIN Verification Dialog for Parents [done]
+### Dependencies: None
+### Description: Create a secure PIN verification dialog that parents must use to approve or reject completed tasks.
+### Details:
+1. Create a reusable PIN verification modal component
+2. Implement the verifyParentPin function to validate the entered PIN against the stored value
+3. Add appropriate error handling for incorrect PINs
+4. Include a PIN reset option
+5. Ensure the dialog is accessible and works on mobile devices
+6. Add rate limiting to prevent brute force attacks
+
+## 4. Add Approve/Reject Functionality with Comments [done]
+### Dependencies: None
+### Description: Implement the backend and frontend logic to allow parents to approve or reject completed tasks with optional feedback comments.
+### Details:
+1. Create API endpoints for approving and rejecting tasks
+2. Implement the approval/rejection logic in the completionService
+3. Add a comment field to the approval dialog
+4. Update the task status to 'approved' or 'rejected' based on parent action
+5. Store the approval/rejection timestamp and parent ID
+6. Trigger appropriate notifications when a task is approved or rejected
+
+## 5. Implement Visual Feedback and History View [done]
+### Dependencies: None
+### Description: Create visual indicators for task states (pending, approved, rejected) and implement a history view of completed tasks.
+### Details:
+1. Add distinct visual styles for each task state (pending, approved, rejected)
+2. Create a TaskHistory component to display completed tasks
+3. Implement filtering options in the history view (by status, date range, child)
+4. Add streak tracking and visual indicators for consecutive task completions
+5. Create a summary view showing completion statistics
+6. Ensure all state changes have appropriate animations for better UX
+

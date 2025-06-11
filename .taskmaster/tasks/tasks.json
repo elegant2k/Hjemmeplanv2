@@ -1,0 +1,969 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Project Setup with Vite, React, and Tailwind",
+      "description": "Initialize the project with Vite, React 18, Tailwind CSS, shadcn/ui components, React Router, and Zustand for state management.",
+      "details": "1. Create a new Vite project with React template: `npm create vite@latest familie-todo-app --template react-ts`\n2. Install Tailwind CSS: `npm install -D tailwindcss postcss autoprefixer`\n3. Initialize Tailwind: `npx tailwindcss init -p`\n4. Configure Tailwind in tailwind.config.js to scan React components\n5. Set up shadcn/ui: `npx shadcn-ui@latest init`\n6. Install React Router: `npm install react-router-dom`\n7. Set up basic routing structure with protected routes for admin areas\n8. Install Zustand: `npm install zustand`\n9. Create basic store structure for family, users, tasks\n10. Set up project folder structure:\n```\nsrc/\n  components/\n    ui/            # shadcn components\n    layout/        # Layout components\n    dashboard/     # Dashboard components\n    tasks/         # Task-related components\n  stores/          # Zustand stores\n  lib/             # Utility functions\n  services/        # Mock data services\n  models/          # TypeScript interfaces\n  pages/           # Route components\n```",
+      "testStrategy": "1. Verify all dependencies install correctly\n2. Ensure Vite dev server runs without errors\n3. Confirm hot module replacement works\n4. Test basic routing functionality\n5. Verify Tailwind styles are applied correctly\n6. Test shadcn/ui components render properly\n7. Verify Zustand store initialization",
+      "priority": "high",
+      "dependencies": [],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Initialize Vite Project with React and TypeScript",
+          "description": "Create a new Vite project with React and TypeScript template and set up the initial project structure.",
+          "dependencies": [],
+          "details": "Run `npm create vite@latest familie-todo-app --template react-ts` to create the project. After creation, navigate to the project directory and run `npm install` to install dependencies. Create the folder structure as specified in the task description, including components/, stores/, lib/, services/, models/, and pages/ directories.",
+          "status": "done",
+          "testStrategy": "Verify the project structure is correctly set up and that the application runs with `npm run dev`."
+        },
+        {
+          "id": 2,
+          "title": "Integrate Tailwind CSS and shadcn/ui Components",
+          "description": "Set up Tailwind CSS for styling and integrate shadcn/ui component library.",
+          "dependencies": [
+            1
+          ],
+          "details": "Install Tailwind CSS with `npm install -D tailwindcss postcss autoprefixer`. Initialize Tailwind with `npx tailwindcss init -p`. Configure tailwind.config.js to scan React components by adding appropriate paths. Set up shadcn/ui with `npx shadcn-ui@latest init` and follow the prompts to configure it with Tailwind. Add the Tailwind directives to the main CSS file.",
+          "status": "done",
+          "testStrategy": "Create a simple component using Tailwind classes and a shadcn/ui component to verify both are working correctly."
+        },
+        {
+          "id": 3,
+          "title": "Implement React Router with Protected Routes",
+          "description": "Set up routing structure with React Router, including protected routes for admin areas.",
+          "dependencies": [
+            1
+          ],
+          "details": "Install React Router with `npm install react-router-dom`. Create a router configuration in a new file (e.g., src/lib/router.tsx). Implement a basic route structure with public routes and protected routes. Create a simple authentication context or store to manage user authentication state. Implement a ProtectedRoute component that redirects unauthenticated users.",
+          "status": "done",
+          "testStrategy": "Test navigation between routes and verify that protected routes redirect unauthenticated users appropriately."
+        },
+        {
+          "id": 4,
+          "title": "Set Up Zustand State Management",
+          "description": "Implement Zustand for state management with stores for family, users, and tasks.",
+          "dependencies": [
+            1
+          ],
+          "details": "Install Zustand with `npm install zustand`. Create separate store files in the stores/ directory for different data domains: familyStore.ts, userStore.ts, and taskStore.ts. Define TypeScript interfaces in the models/ directory for each data type. Implement basic CRUD operations in each store. Create a hook-based API for consuming the stores in components.",
+          "status": "done",
+          "testStrategy": "Write simple tests for each store to verify state updates work correctly. Create a test component that uses each store to confirm the hook API functions as expected."
+        },
+        {
+          "id": 5,
+          "title": "Create Mock Data Services",
+          "description": "Implement mock data services to simulate backend API calls for development.",
+          "dependencies": [
+            4
+          ],
+          "details": "Create service files in the services/ directory that simulate API calls for each data domain (family, users, tasks). Implement methods that return promises to mimic asynchronous API behavior. Add artificial delay to simulate network latency. Connect the services to the Zustand stores so that store actions call the appropriate service methods. Create a mock data file with initial data for development.",
+          "status": "done",
+          "testStrategy": "Test each service method individually to ensure it returns the expected data. Verify integration with stores by triggering actions and confirming state updates."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement Data Models and Mock Services",
+      "description": "Define TypeScript interfaces for all data models and create mock data services that simulate backend functionality using localStorage.",
+      "details": "1. Create TypeScript interfaces for all data models as specified in PRD:\n   - Family\n   - User\n   - Task\n   - TaskCompletion\n   - Streak\n   - Reward\n\n2. Implement localStorage service utilities:\n```typescript\n// Example for localStorage utility\nconst storagePrefix = 'familie_todo_';\n\nexport const storage = {\n  getItem: (key: string) => {\n    return JSON.parse(window.localStorage.getItem(`${storagePrefix}${key}`) || 'null');\n  },\n  setItem: (key: string, value: unknown) => {\n    window.localStorage.setItem(`${storagePrefix}${key}`, JSON.stringify(value));\n  },\n  removeItem: (key: string) => {\n    window.localStorage.removeItem(`${storagePrefix}${key}`);\n  }\n};\n```\n\n3. Create mock data services for each entity:\n   - familyService (CRUD operations for family data)\n   - userService (user management, PIN verification)\n   - taskService (task CRUD, assignment)\n   - completionService (mark as complete, approve/reject)\n   - streakService (calculate and update streaks)\n   - rewardService (manage rewards and progress)\n\n4. Implement data persistence layer with localStorage\n5. Create initial seed data for testing\n6. Add data export/import functionality for backup",
+      "testStrategy": "1. Unit test each data model with sample data\n2. Test localStorage persistence across page refreshes\n3. Verify CRUD operations for each service\n4. Test data relationships (e.g., tasks belonging to users)\n5. Verify data integrity constraints\n6. Test import/export functionality\n7. Simulate edge cases (storage full, invalid data)",
+      "priority": "high",
+      "dependencies": [
+        1
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Define TypeScript Interfaces for Data Models",
+          "description": "Create TypeScript interfaces for all data models as specified in the PRD, ensuring proper type definitions and relationships between models.",
+          "dependencies": [],
+          "details": "Create a models.ts file that defines interfaces for Family, User, Task, TaskCompletion, Streak, and Reward. Include appropriate types for all properties, define relationships between models (e.g., User belongs to Family), and add JSDoc comments for clarity. Consider using discriminated unions where appropriate and ensure models match the PRD specifications.",
+          "status": "done",
+          "testStrategy": "Create a TypeScript playground file to validate the interfaces with sample data and verify type checking works as expected."
+        },
+        {
+          "id": 2,
+          "title": "Implement localStorage Service Utilities",
+          "description": "Create utility functions for interacting with localStorage, including prefixing, serialization/deserialization, and error handling.",
+          "dependencies": [],
+          "details": "Implement the storage utility as outlined in the example, but enhance it with error handling for JSON parsing failures, storage quota exceeded errors, and private browsing mode detection. Add methods for batch operations and clearing all app data. Create a separate file for these utilities and export them for use in the data services.",
+          "status": "done",
+          "testStrategy": "Write unit tests to verify storage operations work correctly, including edge cases like storing undefined values, large objects, and handling localStorage being unavailable."
+        },
+        {
+          "id": 3,
+          "title": "Create Mock Data Services for Core Entities",
+          "description": "Implement mock services for Family and User entities that simulate backend functionality using the localStorage utilities.",
+          "dependencies": [],
+          "details": "Create familyService.ts and userService.ts files that implement CRUD operations using the storage utilities. Include methods for creating/joining families, user authentication with PIN verification, and user profile management. Implement proper error handling and return types that match what a real API would return, including async/await patterns with Promises.",
+          "status": "done",
+          "testStrategy": "Create test scenarios that verify all service methods work correctly, including error cases and edge conditions like duplicate users or invalid PINs."
+        },
+        {
+          "id": 4,
+          "title": "Implement Task and Completion Services",
+          "description": "Create mock services for Task and TaskCompletion entities with full CRUD functionality and business logic.",
+          "dependencies": [
+            3
+          ],
+          "details": "Implement taskService.ts and completionService.ts with methods for creating, reading, updating, and deleting tasks and completions. Include functionality for task assignment, recurring tasks, completion approval/rejection workflows, and filtering tasks by various criteria (assigned user, completion status, date range). Ensure proper validation of task completion rules.",
+          "status": "done",
+          "testStrategy": "Test task creation, assignment, completion workflows, and edge cases like completing tasks multiple times or attempting to complete expired tasks."
+        },
+        {
+          "id": 5,
+          "title": "Develop Streak and Reward Services with Seed Data",
+          "description": "Implement streak calculation logic, reward management, and create initial seed data for testing the application.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Create streakService.ts and rewardService.ts with methods to calculate user streaks based on task completions and manage rewards. Implement data export/import functionality for backup purposes. Create a seedData.ts file with initial data for testing that includes sample families, users, tasks, completions, and rewards. Add a method to initialize the app with this seed data on first run.",
+          "status": "done",
+          "testStrategy": "Test streak calculations with various completion patterns, reward progress tracking, and verify that seed data is correctly loaded and can be reset. Test the export/import functionality with various data sizes."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Create Layout Components and Navigation",
+      "description": "Develop the core layout components including header, navigation, and responsive container structure that will be used across the application.",
+      "details": "1. Create base layout components:\n   - MainLayout (container with header, content area, footer)\n   - Header (with family name, user switcher)\n   - Sidebar (navigation for different sections)\n   - UserSwitcher (component to change between family members)\n   - PIN entry dialog for parent authentication\n\n2. Implement responsive design using Tailwind:\n   - Mobile-first approach with breakpoints\n   - Card-based layout as specified in PRD\n   - Consistent spacing and visual hierarchy\n\n3. Set up navigation with React Router:\n```typescript\nconst router = createBrowserRouter([\n  {\n    path: '/',\n    element: <MainLayout />,\n    children: [\n      { index: true, element: <Dashboard /> },\n      { path: 'tasks', element: <TasksPage /> },\n      { path: 'rewards', element: <RewardsPage /> },\n      { path: 'admin', element: <ProtectedRoute><AdminPage /></ProtectedRoute> }\n    ]\n  }\n]);\n```\n\n4. Create ProtectedRoute component for parent-only areas\n5. Implement color-coded status indicators as specified in PRD\n6. Create consistent card component for family members\n7. Implement user context to track current active user",
+      "testStrategy": "1. Test responsive layout across different screen sizes\n2. Verify navigation works correctly between all routes\n3. Test protected routes with and without PIN authentication\n4. Verify user switching functionality\n5. Test keyboard navigation accessibility\n6. Verify color contrast meets WCAG 2.1 AA standards\n7. Test screen reader compatibility",
+      "priority": "medium",
+      "dependencies": [
+        1
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Base Layout Components",
+          "description": "Develop the foundational layout components that will structure the application UI",
+          "dependencies": [],
+          "details": "Implement the following components using React and Tailwind CSS:\n1. MainLayout: Create a container component with slots for header, sidebar, content area, and footer\n2. Header: Implement with family name display and placeholder for user switcher\n3. Sidebar: Build navigation panel with links to different sections\n4. Footer: Simple footer with copyright information\nEnsure components use Tailwind for styling with a mobile-first approach and proper responsive breakpoints.",
+          "status": "done",
+          "testStrategy": "Write unit tests for each component using React Testing Library to verify rendering and basic functionality. Create Storybook stories to visualize components in isolation."
+        },
+        {
+          "id": 2,
+          "title": "Implement User Switcher and PIN Authentication",
+          "description": "Create components for switching between family members and PIN-based authentication for parent access",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Develop UserSwitcher component that displays family member avatars and names\n2. Create PIN entry dialog component with numeric keypad\n3. Implement state management for current active user\n4. Add visual indicators for selected user\n5. Connect PIN verification to a placeholder authentication function (to be replaced with actual auth later)\nUse React context to manage and provide the current user state throughout the application.",
+          "status": "done",
+          "testStrategy": "Test PIN entry with various input scenarios including correct/incorrect PINs. Test user switching functionality to ensure proper state updates."
+        },
+        {
+          "id": 3,
+          "title": "Set Up React Router Navigation Structure",
+          "description": "Configure routing for the application with proper nesting and route protection",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Install and configure React Router\n2. Set up the router configuration as specified in the task description\n3. Create placeholder page components for Dashboard, TasksPage, RewardsPage, and AdminPage\n4. Implement the ProtectedRoute component that checks for parent authentication before rendering protected routes\n5. Add navigation links in the Sidebar component that connect to the router",
+          "status": "done",
+          "testStrategy": "Test navigation flow between routes. Verify protected routes correctly block/allow access based on authentication state."
+        },
+        {
+          "id": 4,
+          "title": "Create Card Components with Status Indicators",
+          "description": "Develop reusable card components with color-coded status indicators for family members and items",
+          "dependencies": [
+            2
+          ],
+          "details": "1. Create a base Card component with consistent styling\n2. Implement FamilyMemberCard component that displays user information\n3. Add color-coded status indicators as specified in the PRD\n4. Ensure cards are responsive and maintain proper layout at all breakpoints\n5. Implement hover and active states for interactive cards",
+          "status": "done",
+          "testStrategy": "Test rendering of cards with different status values. Verify responsive behavior across breakpoints. Create visual regression tests to ensure consistent appearance."
+        },
+        {
+          "id": 5,
+          "title": "Implement User Context and Connect Components",
+          "description": "Create a global user context and connect all components to create a cohesive navigation experience",
+          "dependencies": [
+            2,
+            3,
+            4
+          ],
+          "details": "1. Create UserContext with provider component to track current active user\n2. Implement useUser hook for easy context consumption\n3. Connect UserSwitcher to update the context\n4. Update Header to display current user information\n5. Connect ProtectedRoute to check user role from context\n6. Ensure all components respond appropriately to user changes\n7. Add final styling adjustments for visual consistency",
+          "status": "done",
+          "testStrategy": "Create integration tests that verify the complete user flow: switching users, accessing protected/unprotected routes, and confirming proper UI updates throughout the application."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Implement Dashboard and Family Overview",
+      "description": "Create the main dashboard that displays all family members' tasks and status for the day/week, providing a quick overview of who needs to complete which tasks.",
+      "details": "1. Create FamilyMemberCard component:\n```typescript\ninterface FamilyMemberCardProps {\n  user: User;\n  tasks: Task[];\n  completions: TaskCompletion[];\n  streaks: Streak[];\n  onTaskToggle: (taskId: string, completed: boolean) => void;\n}\n\nconst FamilyMemberCard: React.FC<FamilyMemberCardProps> = ({ user, tasks, completions, streaks, onTaskToggle }) => {\n  // Implementation\n};\n```\n\n2. Create Dashboard component with grid layout of FamilyMemberCards\n3. Implement task status indicators (color-coded as specified)\n4. Create FamilyStats component to show overall family progress\n5. Implement QuickActions component for common tasks\n6. Add filtering options (today, this week, all)\n7. Create streak visualization with 'flame' indicators\n8. Implement responsive grid layout (2-4 cards per row based on screen size)\n9. Add refresh/sync functionality\n10. Implement empty states for new families",
+      "testStrategy": "1. Test dashboard with various family configurations (1-6 members)\n2. Verify correct task status display (completed, pending, awaiting approval)\n3. Test responsive layout across device sizes\n4. Verify streak calculations display correctly\n5. Test task filtering functionality\n6. Verify dashboard updates when tasks are completed\n7. Test empty states and onboarding experience",
+      "priority": "high",
+      "dependencies": [
+        2,
+        3
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create FamilyMemberCard Component",
+          "description": "Implement the FamilyMemberCard component that displays a user's tasks, completion status, and streaks.",
+          "dependencies": [],
+          "details": "Create a React functional component that accepts the defined FamilyMemberCardProps interface. Implement the card layout with the user's avatar/name, their assigned tasks with checkboxes for completion status, and visual indicators for streaks. Use color coding for task status (e.g., green for completed, yellow for in-progress, red for overdue). Include a responsive design that works well in the dashboard grid.",
+          "status": "done",
+          "testStrategy": "Write unit tests using React Testing Library to verify the component renders correctly with different prop combinations, handles task toggling properly, and displays the correct visual indicators based on task status and streaks."
+        },
+        {
+          "id": 2,
+          "title": "Implement Dashboard Layout with Grid System",
+          "description": "Create the main Dashboard component with a responsive grid layout to display FamilyMemberCards.",
+          "dependencies": [],
+          "details": "Develop a Dashboard component that uses CSS Grid or Flexbox to create a responsive layout. Implement the grid to show 2-4 FamilyMemberCards per row based on screen size. Add appropriate spacing and styling between cards. Include container components for organizing the dashboard sections. Ensure the layout is responsive and works well on mobile, tablet, and desktop views.",
+          "status": "done",
+          "testStrategy": "Test the responsive behavior using different viewport sizes. Verify that the grid layout adjusts appropriately (2-4 cards per row) based on screen width. Test with various numbers of family members to ensure the grid handles different quantities well."
+        },
+        {
+          "id": 3,
+          "title": "Create FamilyStats Component",
+          "description": "Implement a component that displays aggregate statistics and progress for the entire family.",
+          "dependencies": [],
+          "details": "Develop a FamilyStats component that calculates and displays metrics such as: total tasks completed today/this week, family completion rate, longest active streaks, and overall family progress. Create visualizations like progress bars or charts to represent the data. Position this component prominently at the top of the dashboard. Include animations for progress indicators to make achievements more engaging.",
+          "status": "done",
+          "testStrategy": "Test the calculations for family statistics with various data scenarios. Verify that the component updates correctly when underlying task data changes. Test edge cases like no completed tasks or all tasks completed."
+        },
+        {
+          "id": 4,
+          "title": "Implement Filtering and Time Range Selection",
+          "description": "Add controls to filter the dashboard view by time range and other relevant criteria.",
+          "dependencies": [],
+          "details": "Create filter controls that allow users to switch between different time views (today, this week, all). Implement the filtering logic to update the displayed tasks and statistics based on the selected time range. Add additional filter options like filtering by task category or priority if applicable. Ensure the filter state is preserved during navigation and page refreshes. Make the filters accessible and easy to use on mobile devices.",
+          "status": "done",
+          "testStrategy": "Test that changing filters correctly updates the displayed data. Verify filter state persistence works as expected. Test filter combinations to ensure they produce the expected results."
+        },
+        {
+          "id": 5,
+          "title": "Add QuickActions and Empty States",
+          "description": "Implement QuickActions for common tasks and create appropriate empty states for new families.",
+          "dependencies": [],
+          "details": "Create a QuickActions component that provides shortcuts for common actions like adding new tasks, marking all tasks complete, or refreshing the dashboard. Implement empty states that display helpful guidance when a family has no tasks, no members, or is newly created. Include onboarding tips or wizards in the empty states to help users get started. Add a manual refresh/sync button with appropriate loading indicators. Ensure all actions have proper error handling and success confirmations.",
+          "status": "done",
+          "testStrategy": "Test the QuickActions functionality to verify each action works correctly. Test empty states by creating scenarios with no data. Verify that error states are handled gracefully and that success confirmations appear as expected."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Develop Task Management System",
+      "description": "Create the complete task management system with CRUD operations, assignment capabilities, and frequency settings.",
+      "details": "1. Create TaskForm component for adding/editing tasks:\n```typescript\ninterface TaskFormProps {\n  initialData?: Task;\n  familyId: string;\n  onSubmit: (task: Omit<Task, 'id'>) => void;\n  onCancel: () => void;\n}\n```\n\n2. Implement TaskList component with filtering and sorting\n3. Create TaskItem component with status indicators\n4. Implement task assignment functionality (assign to family member)\n5. Add frequency selection (daily, weekly, monthly, once)\n6. Create point and allowance amount fields\n7. Implement task activation/deactivation toggle\n8. Add task description/details expandable section\n9. Create batch operations (assign multiple tasks, delete multiple)\n10. Implement drag-and-drop for task reordering (optional)\n11. Add task templates for common household chores",
+      "testStrategy": "1. Test CRUD operations for tasks\n2. Verify task assignment to different family members\n3. Test frequency settings and their effect on task visibility\n4. Verify point calculations\n5. Test task filtering and sorting\n6. Verify form validation for required fields\n7. Test batch operations\n8. Verify task status updates correctly",
+      "priority": "high",
+      "dependencies": [
+        2,
+        3
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement TaskForm Component",
+          "description": "Create a form component for adding and editing tasks with all required fields including title, description, points, allowance amount, and frequency settings.",
+          "dependencies": [],
+          "details": "Build a React component that accepts the TaskFormProps interface. Include form fields for task title, description, point value, allowance amount, and frequency selection (daily, weekly, monthly, one-time). Implement form validation to ensure required fields are completed. Add submit and cancel handlers that connect to the provided props callbacks. Style the form using the application's design system.",
+          "status": "done",
+          "testStrategy": "Write unit tests to verify form validation, field updates, and proper handling of submit/cancel actions. Test with both empty initialData (create mode) and populated initialData (edit mode)."
+        },
+        {
+          "id": 2,
+          "title": "Develop TaskList and TaskItem Components",
+          "description": "Create components to display and interact with tasks, including list view with filtering/sorting capabilities and individual task items with status indicators.",
+          "dependencies": [],
+          "details": "Implement TaskList as a container component that fetches and displays tasks. Add filter controls for status, assignee, and frequency. Implement sorting by due date, points, and title. Create the TaskItem component to display individual tasks with visual status indicators, showing assignment status, completion status, and due date. Include an expandable section for task details. Both components should use the application's design system for consistent styling.",
+          "status": "done",
+          "testStrategy": "Test filtering and sorting functionality with various data sets. Verify TaskItem displays correct information based on different task states. Test the expandable details section."
+        },
+        {
+          "id": 3,
+          "title": "Implement Task Assignment Functionality",
+          "description": "Create the system for assigning tasks to family members, including UI controls and data management.",
+          "dependencies": [],
+          "details": "Add a user selection dropdown in the TaskForm for assigning tasks to family members. Fetch family member data from the backend. Update the TaskItem component to display assignee information. Implement the ability to reassign tasks from the task list view. Create the necessary API calls to update task assignments in the database. Add visual indicators showing assignment status.",
+          "status": "done",
+          "testStrategy": "Test assignment changes persist to the database. Verify UI updates correctly when assignments change. Test edge cases like reassigning an in-progress task."
+        },
+        {
+          "id": 4,
+          "title": "Add Task Activation Controls and Batch Operations",
+          "description": "Implement functionality to activate/deactivate tasks and add support for batch operations on multiple tasks.",
+          "dependencies": [],
+          "details": "Add a toggle switch to TaskItem for activating/deactivating tasks. Update the TaskList to show activation status and allow filtering by it. Implement multi-select functionality in the TaskList with checkboxes. Create a batch operations toolbar that appears when multiple tasks are selected. Implement batch assignment, activation/deactivation, and deletion operations. Add confirmation dialogs for destructive actions.",
+          "status": "done",
+          "testStrategy": "Test toggle functionality for individual tasks. Verify batch operations correctly affect all selected tasks. Test confirmation dialogs prevent accidental deletions."
+        },
+        {
+          "id": 5,
+          "title": "Implement Task Templates and Frequency Settings",
+          "description": "Create a system for task templates and implement comprehensive frequency settings for recurring tasks.",
+          "dependencies": [],
+          "details": "Build a library of common household task templates (cleaning, homework, pet care, etc.). Implement a template selector in the TaskForm. Enhance the frequency settings to include specific days for weekly tasks, dates for monthly tasks, and custom recurrence patterns. Add a visual calendar view to show upcoming task instances based on frequency. Implement the backend logic to generate task instances based on frequency settings.",
+          "status": "done",
+          "testStrategy": "Test template selection populates form fields correctly. Verify frequency settings generate the correct task instances. Test the calendar view displays accurate information for different frequency patterns."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Implement Task Completion and Approval Workflow",
+      "description": "Create the two-step process where children mark tasks as completed and parents approve with PIN verification.",
+      "details": "1. Enhance TaskItem component with completion toggle:\n```typescript\nconst handleTaskCompletion = async (taskId: string) => {\n  // Create completion record\n  await completionService.createCompletion({\n    taskId,\n    userId: currentUser.id,\n    completedAt: new Date(),\n    status: 'pending'\n  });\n  \n  // Update UI state\n  updateTaskStatus(taskId, 'pending');\n};\n```\n\n2. Create PendingApprovals component for parent dashboard\n3. Implement PIN verification dialog for parents:\n```typescript\nconst verifyParentPin = (pin: string) => {\n  return userService.verifyPin(currentFamily.id, pin);\n};\n```\n\n4. Add approve/reject functionality with comments\n5. Implement visual feedback for pending/approved/rejected states\n6. Create notifications for pending approvals\n7. Add batch approval functionality for parents\n8. Implement history view of completed tasks\n9. Create automatic streak updates on approval",
+      "testStrategy": "1. Test task completion by children\n2. Verify pending approval status displays correctly\n3. Test PIN verification for parents\n4. Verify approval and rejection workflows\n5. Test streak updates after approval\n6. Verify notifications for pending approvals\n7. Test history view with different date ranges\n8. Verify batch approval functionality",
+      "priority": "high",
+      "dependencies": [
+        4,
+        5
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Enhance TaskItem Component with Completion Toggle",
+          "description": "Modify the TaskItem component to allow children to mark tasks as completed, which will set the task status to 'pending' until parent approval.",
+          "dependencies": [],
+          "details": "1. Add a completion checkbox/button to the TaskItem component\n2. Implement the handleTaskCompletion function to create a completion record in the database\n3. Update the UI to reflect the 'pending' status with appropriate visual indicators\n4. Add optimistic UI updates while the completion is being saved\n5. Handle error cases if the completion record fails to save",
+          "status": "done",
+          "testStrategy": "Test the component with various task states. Verify the UI updates correctly when tasks are marked as completed. Mock the completionService to test success and failure scenarios."
+        },
+        {
+          "id": 2,
+          "title": "Create PendingApprovals Component for Parent Dashboard",
+          "description": "Develop a component that displays all tasks pending approval for a parent, allowing them to see what needs their attention.",
+          "dependencies": [],
+          "details": "1. Create a new PendingApprovals component that fetches all tasks with 'pending' status for the current family\n2. Implement filtering and sorting options (by child, date, etc.)\n3. Display task details including child name, task description, and completion time\n4. Add approve/reject action buttons for each pending task\n5. Implement pagination or infinite scrolling if there are many pending tasks",
+          "status": "done",
+          "testStrategy": "Test the component renders correctly with mock data. Verify filtering and sorting functions work as expected. Test pagination/infinite scrolling with large datasets."
+        },
+        {
+          "id": 3,
+          "title": "Implement PIN Verification Dialog for Parents",
+          "description": "Create a secure PIN verification dialog that parents must use to approve or reject completed tasks.",
+          "dependencies": [],
+          "details": "1. Create a reusable PIN verification modal component\n2. Implement the verifyParentPin function to validate the entered PIN against the stored value\n3. Add appropriate error handling for incorrect PINs\n4. Include a PIN reset option\n5. Ensure the dialog is accessible and works on mobile devices\n6. Add rate limiting to prevent brute force attacks",
+          "status": "done",
+          "testStrategy": "Test PIN verification with correct and incorrect PINs. Verify error messages display appropriately. Test accessibility compliance. Verify rate limiting works correctly."
+        },
+        {
+          "id": 4,
+          "title": "Add Approve/Reject Functionality with Comments",
+          "description": "Implement the backend and frontend logic to allow parents to approve or reject completed tasks with optional feedback comments.",
+          "dependencies": [],
+          "details": "1. Create API endpoints for approving and rejecting tasks\n2. Implement the approval/rejection logic in the completionService\n3. Add a comment field to the approval dialog\n4. Update the task status to 'approved' or 'rejected' based on parent action\n5. Store the approval/rejection timestamp and parent ID\n6. Trigger appropriate notifications when a task is approved or rejected",
+          "status": "done",
+          "testStrategy": "Test the approval and rejection flows end-to-end. Verify comments are saved correctly. Test with and without comments. Verify notifications are triggered appropriately."
+        },
+        {
+          "id": 5,
+          "title": "Implement Visual Feedback and History View",
+          "description": "Create visual indicators for task states (pending, approved, rejected) and implement a history view of completed tasks.",
+          "dependencies": [],
+          "details": "1. Add distinct visual styles for each task state (pending, approved, rejected)\n2. Create a TaskHistory component to display completed tasks\n3. Implement filtering options in the history view (by status, date range, child)\n4. Add streak tracking and visual indicators for consecutive task completions\n5. Create a summary view showing completion statistics\n6. Ensure all state changes have appropriate animations for better UX",
+          "status": "done",
+          "testStrategy": "Test the visual indicators in different states. Verify the history view displays correct data with various filters. Test streak calculations with different scenarios of task completions."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Develop Streak and Reward System",
+      "description": "Implement the streak counting system and configurable rewards based on achievement milestones.",
+      "details": "1. Create streak calculation service:\n```typescript\nconst calculateStreak = (completions: TaskCompletion[], taskId: string, userId: string) => {\n  // Sort completions by date\n  const sortedCompletions = completions\n    .filter(c => c.taskId === taskId && c.userId === userId && c.status === 'approved')\n    .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());\n  \n  // Calculate current streak\n  let currentStreak = 0;\n  let previousDate: Date | null = null;\n  \n  for (const completion of sortedCompletions) {\n    const completionDate = new Date(completion.completedAt);\n    \n    if (!previousDate) {\n      currentStreak = 1;\n      previousDate = completionDate;\n      continue;\n    }\n    \n    // Check if dates are consecutive based on task frequency\n    // Implementation depends on frequency (daily, weekly, etc.)\n    \n    // If streak broken, exit loop\n    if (streakBroken) break;\n    \n    currentStreak++;\n    previousDate = completionDate;\n  }\n  \n  return currentStreak;\n};\n```\n\n2. Implement RewardForm for creating/editing rewards\n3. Create RewardList component to display available rewards\n4. Implement RewardProgress component with visual indicators\n5. Add RewardClaim functionality when milestones are reached\n6. Create streak visualization with flames/badges\n7. Implement streak exceptions for holidays/sickness\n8. Add milestone celebrations (animations/sounds)\n9. Create reward history tracking",
+      "testStrategy": "1. Test streak calculation with various completion patterns\n2. Verify streak breaks correctly when tasks are missed\n3. Test reward creation and editing\n4. Verify progress tracking toward rewards\n5. Test reward claiming functionality\n6. Verify streak visualization updates correctly\n7. Test holiday/exception handling\n8. Verify milestone celebrations trigger appropriately",
+      "priority": "medium",
+      "dependencies": [
+        6
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Streak Calculation Service",
+          "description": "Complete the streak calculation service to handle different task frequencies and properly track consecutive completions.",
+          "dependencies": [],
+          "details": "Extend the existing calculateStreak function to handle different frequency types (daily, weekly, monthly). Implement the streakBroken logic based on the time difference between completions relative to the task frequency. Add functions to reset streaks when appropriate and handle edge cases like timezone differences. Create utility functions for date comparisons that respect the frequency type.\n<info added on 2025-06-10T18:22:54.041Z>\n## Analysis of Current Implementation\n\nThe StreakService is already quite well implemented with the following features:\n- Complete CRUD operations for streaks\n- Frequency-aware streak calculation (daily, weekly, monthly, once)\n- Grace periods for different frequencies (1-5 days depending on type)\n- Error handling with custom StreakServiceError\n- Statistics calculation (active streaks, longest streak, averages)\n- Integration with completionService for approved completions\n\n### Current Issues Identified:\n\n1. **Missing Automatic Streak Updates**: CompletionService approveCompletion() has a comment about updating streaks externally to avoid circular dependency, but no integration exists.\n\n2. **Missing Integration Points**: Streak updates are not triggered when tasks are approved.\n\n3. **No Holiday/Exception Handling**: The service lacks special date handling for holidays/sick days.\n\n4. **Missing Scheduled Updates**: No daily job to check and update streak status.\n\n### Areas that need completion:\n\n1. Create hook for automatic streak updates after task approval\n2. Add holiday exception handling\n3. Implement streak status checking (daily job simulation)\n4. Better integration with UI components\n</info added on 2025-06-10T18:22:54.041Z>\n<info added on 2025-06-10T18:27:35.972Z>\n## Implementation Progress Update\n\n### Completed Enhancements:\n\n1. **Automatic Streak Updates Integration**: \n   - Added `approveCompletionWithStreakUpdate()` method to CompletionService\n   - Uses dynamic import to avoid circular dependency\n   - Automatically updates streaks when tasks are approved\n\n2. **Holiday/Exception Handling**:\n   - Added `HolidayException` interface and related methods\n   - `addHolidayException()`, `getHolidayExceptions()`, `removeHolidayException()`\n   - Enhanced `isConsecutiveByFrequencyWithHolidays()` with grace period extensions\n   - Updated `calculateStreak()` to use holiday-aware logic\n\n3. **Daily Streak Maintenance**:\n   - Added `performDailyStreakCheck()` for simulated scheduled job\n   - Automatically deactivates expired streaks\n   - Returns summary of updated/deactivated streaks\n\n4. **Enhanced User Experience**:\n   - Added `getUserStreakSummary()` for comprehensive user streak data\n   - Created `useStreaks()` hook for React components\n   - Better error handling and logging\n\n5. **Code Quality Improvements**:\n   - Fixed TypeScript compilation errors\n   - Removed unused imports and variables\n   - Updated seedData.ts to properly call streak functions\n   - Enhanced type safety\n\n### Current Status:\nThe streak calculation service is now feature-complete with:\n- ✅ Frequency-aware calculations (daily, weekly, monthly)\n- ✅ Holiday exception handling\n- ✅ Automatic integration with task approval\n- ✅ Daily maintenance simulation\n- ✅ Comprehensive user summaries\n- ✅ React hooks for UI integration\n\n### Next Steps:\nReady to move to subtask 7.2 (Reward Configuration Components) as the core streak calculation service is now complete and fully integrated.\n</info added on 2025-06-10T18:27:35.972Z>",
+          "status": "done",
+          "testStrategy": "Write unit tests with various completion patterns to verify streak calculations for different frequencies. Include edge cases like month boundaries, leap years, and timezone changes."
+        },
+        {
+          "id": 2,
+          "title": "Create Reward Configuration Components",
+          "description": "Develop the UI components for creating, editing, and displaying rewards.",
+          "dependencies": [],
+          "details": "Implement RewardForm component with fields for name, description, required streak/milestone, reward type (badge, points, etc.), and visual assets. Create RewardList component to display available rewards in a grid or list format with filtering options. Include reward editing and deletion functionality. Ensure proper validation of reward configuration data.\n<info added on 2025-06-10T18:34:41.859Z>\n## Completed Implementation: Reward Configuration Components\n\n### Created Components:\n\n1. **RewardForm Component (`src/components/RewardForm.tsx`)**:\n   - Comprehensive form for creating and editing rewards\n   - Live preview of reward with category icons and cost display\n   - Support for all reward categories (privilege, item, activity, allowance)\n   - Points and allowance cost configuration\n   - Active/inactive status toggle\n   - Form validation and error handling\n   - Can be used standalone or in dialog mode\n\n2. **RewardCard Component (`src/components/RewardCard.tsx`)**:\n   - Display individual rewards with visual indicators\n   - Category-based icons and color coding\n   - Cost display (points + allowance)\n   - Affordability checking for children (shows if they can afford it)\n   - Parent actions: Edit, Toggle Active/Inactive, Delete\n   - Child actions: Redeem reward (if affordable)\n   - Compact and full display modes\n   - Active/inactive status indicators\n\n3. **RewardList Component (`src/components/RewardList.tsx`)**:\n   - Grid display of multiple rewards\n   - Filtering options: All, Available, Affordable (for children)\n   - Sorting: Newest, Cost (low/high), Category\n   - User progress display for children (available points/allowance)\n   - Automatic refresh after reward operations\n   - Empty states with appropriate messaging\n   - Integration with RewardCard for display\n\n4. **RewardDialog Component (`src/components/RewardDialog.tsx`)**:\n   - Modal dialog wrapper for RewardForm\n   - Handles create/edit workflows\n   - Clean modal interface with backdrop\n   - Success callbacks and dialog management\n\n5. **Updated RewardsPage (`src/pages/RewardsPage.tsx`)**:\n   - Complete integration of all reward components\n   - Parent/child role-based functionality\n   - Dialog management for create/edit operations\n\n### Features Implemented:\n- ✅ Full CRUD operations for rewards\n- ✅ Category-based organization with icons\n- ✅ Cost configuration (points + allowance)\n- ✅ User progress tracking and affordability checking\n- ✅ Filter and sort functionality\n- ✅ Role-based UI (parent vs child views)\n- ✅ Reward redemption system\n- ✅ Visual feedback and status indicators\n- ✅ Responsive design\n- ✅ Form validation and error handling\n\n### Integration Points:\n- Uses existing `rewardService` for all backend operations\n- Integrates with `useUser` context for role and family management\n- Compatible with existing UI component system\n- Uses standard Card, Button components from UI library\n</info added on 2025-06-10T18:34:41.859Z>",
+          "status": "done",
+          "testStrategy": "Create component tests to verify form validation, CRUD operations, and proper rendering of reward information."
+        },
+        {
+          "id": 3,
+          "title": "Implement Streak Tracking and Storage",
+          "description": "Create the backend services and database schema for storing and updating user streaks.",
+          "dependencies": [
+            1
+          ],
+          "details": "Design and implement database schema for storing user streaks with fields for userId, taskId, currentStreak, longestStreak, lastCompletionDate, and streakHistory. Create API endpoints for retrieving, updating, and resetting streaks. Implement a scheduled job to check and update streaks daily. Add streak exception handling for configurable special dates (holidays, sick days).\n<info added on 2025-06-10T18:43:24.331Z>\n## Completed Implementation: Streak Tracking and Storage\n\n### Created Components and Services:\n\n1. **StreakDisplay Component (`src/components/StreakDisplay.tsx`)**:\n   - Comprehensive streak visualization with multiple display modes\n   - Shows individual task streaks with icons, colors, and activity status\n   - Compact and full view modes for different contexts\n   - User streak summary with total active streaks and longest streak\n   - Motivational messages based on streak performance\n   - Integration with useStreaks hook for real-time data\n   - Color-coded streak levels (0=⭕, 1-2=🔥, 3-6=🚀, 7-13=⭐, 14-29=🏆, 30+=👑)\n\n2. **StreakSettings Component (`src/components/StreakSettings.tsx`)**:\n   - Parent-only interface for managing streak system configuration\n   - Holiday exception management (add/remove special dates)\n   - Daily streak check functionality with status reporting\n   - System information about grace periods for different frequencies\n   - Form validation and error handling\n   - Integration with useStreaks hook for holiday management\n\n3. **StreaksPage (`src/pages/StreaksPage.tsx`)**:\n   - Dedicated page for comprehensive streak management\n   - Tab-based interface (Overview / Settings)\n   - User selection for parents to view family member streaks\n   - Family overview with individual streak displays\n   - Educational tips for building streaks\n   - Role-based functionality (parent vs child views)\n\n4. **StreakStorage Service (`src/services/streakStorage.ts`)**:\n   - Enhanced storage layer with data integrity features\n   - Streak history tracking with automatic change detection\n   - Batch operations for performance optimization\n   - Metadata management (last check dates, totals, milestones)\n   - Data validation and cleanup operations\n   - Export/import functionality for backups\n   - Separate storage keys for different data types\n   - Storage limit management (max 1000 history entries)\n\n5. **StreakProgressBar Component (`src/components/StreakProgressBar.tsx`)**:\n   - Visual progress bar for streak milestones\n   - Dynamic colors based on progress and activity\n   - Multiple size options (sm/md/lg)\n   - Milestone markers and completion indicators\n   - Status indicators for active/inactive streaks\n   - Percentage and progress display\n\n### Data Storage Architecture:\n\n**Storage Keys:**\n- `streaks`: Core streak data\n- `streak_holidays`: Holiday exceptions\n- `streak_history`: Historical change tracking\n- `streak_metadata`: Family-level metadata\n\n**Data Types:**\n- `StreakHistory`: Track streak changes with timestamps\n- `StreakMetadata`: Family analytics and check dates\n- Enhanced holiday exception tracking\n\n### Key Features Implemented:\n\n- ✅ **Enhanced Storage Layer**: Dedicated storage service with integrity checks\n- ✅ **History Tracking**: Automatic tracking of streak changes and milestones\n- ✅ **Holiday Management**: UI for managing holiday exceptions\n- ✅ **Data Integrity**: Validation and cleanup operations\n- ✅ **Visual Components**: Multiple display modes for different contexts\n- ✅ **Batch Operations**: Performance-optimized storage operations\n- ✅ **Metadata Tracking**: Family-level analytics and statistics\n- ✅ **Export Functionality**: Backup and restore capabilities\n- ✅ **Role-based Access**: Parent controls for sensitive operations\n- ✅ **Motivational Elements**: Encouraging messages and visual feedback\n\n### Integration Points:\n\n- Uses existing `useStreaks` hook for data management\n- Compatible with existing `streakService` for calculations\n- Integrates with `useUser` context for role-based functionality\n- Uses localStorage through enhanced storage layer\n- Compatible with existing Card/Button UI components\n\n### Storage Improvements:\n\n- Automatic history tracking for streak changes\n- Batch operations to reduce storage calls\n- Data integrity validation and cleanup\n- Metadata tracking for analytics\n- Storage optimization (size limits, cleanup)\n- Backup/restore functionality for data safety\n</info added on 2025-06-10T18:43:24.331Z>",
+          "status": "done",
+          "testStrategy": "Write integration tests for the streak storage and retrieval functionality. Test the scheduled job with simulated time progression."
+        },
+        {
+          "id": 4,
+          "title": "Develop Reward Progress Visualization",
+          "description": "Create visual components to display streak progress and reward milestones.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Implement RewardProgress component with progress bars or circular indicators showing current streak relative to reward thresholds. Create streak visualization with animated flame icons or badges that grow with streak length. Add tooltips showing detailed streak information. Implement responsive design for different screen sizes. Create animations for streak increments.\n<info added on 2025-06-10T18:49:13.525Z>\n## Completed Implementation: Reward Progress Visualization\n\n### Created Comprehensive Visualization Components:\n\n1. **RewardProgressBar Component (`src/components/RewardProgressBar.tsx`)**:\n   - Visual progress bars for both points and allowance toward rewards\n   - Color-coded progress levels (gray < 25%, orange < 50%, yellow < 75%, blue < 100%, green = complete)\n   - Multiple size variants (sm, md, lg) for different contexts\n   - Configurable labels and amount displays\n   - Norwegian language support with proper currency formatting\n   - Gradient overlays for enhanced visual appeal\n   - Real-time progress calculation with percentage display\n\n2. **RewardMilestoneCard Component (`src/components/RewardMilestoneCard.tsx`)**:\n   - Individual reward display cards with progress visualization\n   - Category-based styling and icons (privilege 👑, item 🎁, activity 🎮, allowance 💰)\n   - Affordability checking for both points and allowance requirements\n   - Interactive redemption functionality for children\n   - Status indicators (can redeem, insufficient funds, inactive)\n   - Progress bars integrated for each cost type\n   - Current balance display for user reference\n   - Hover effects and responsive design\n\n3. **StreakMilestoneCard Component (`src/components/StreakMilestoneCard.tsx`)**:\n   - Streak milestone visualization with achievement tracking\n   - Five-tier milestone system (Starter 🌱, Consistent 🔥, Dedicated ⭐, Champion 🏆, Legend 👑)\n   - Color-coded tiers (bronze, silver, gold, platinum, diamond)\n   - Achievement celebration functionality with visual feedback\n   - Progress tracking toward each milestone\n   - Reward points display for completed milestones\n   - Achievement dates and celebration replay options\n   - Active/inactive streak state handling\n\n4. **ProgressDashboard Component (`src/components/ProgressDashboard.tsx`)**:\n   - Comprehensive dashboard combining all progress visualization\n   - User selection and progress overview with quick stats\n   - Tabbed interface (Rewards vs Streak Milestones)\n   - \"Nearly Affordable\" rewards section highlighting achievable goals\n   - Complete rewards listing with affordability filters\n   - Streak milestone grid with achievement status\n   - User progress summary with key metrics\n   - Real-time data integration with services\n   - Role-based functionality (parent vs child views)\n   - Responsive grid layouts for different screen sizes\n\n5. **Enhanced UserService (`src/services/userService.ts`)**:\n   - Added `getUserProgress()` method for comprehensive user statistics\n   - Returns points, allowance, completed tasks, active streaks, and longest streak\n   - Mock implementation with realistic random data for development\n   - Proper error handling and TypeScript typing\n\n### Key Features Implemented:\n\n#### Visual Progress System:\n- ✅ Real-time progress bars for reward goals\n- ✅ Color-coded progress levels for immediate feedback\n- ✅ Percentage completion displays\n- ✅ Multiple size variants for different UI contexts\n\n#### Reward Milestone Tracking:\n- ✅ Individual reward cards with progress visualization\n- ✅ Affordability checking for both points and allowance\n- ✅ Category-based visual styling and organization\n- ✅ Interactive redemption system with user feedback\n- ✅ \"Nearly affordable\" highlighting to motivate users\n\n#### Streak Achievement System:\n- ✅ Five-tier milestone progression system\n- ✅ Visual achievement indicators and celebration\n- ✅ Progress tracking toward each milestone\n- ✅ Reward points attribution for completions\n- ✅ Achievement history and replay functionality\n\n#### Dashboard Integration:\n- ✅ Unified progress overview with key statistics\n- ✅ Tabbed organization for rewards vs streaks\n- ✅ Real-time data loading and display\n- ✅ Responsive design for all device sizes\n- ✅ Empty states and loading indicators\n\n#### User Experience Enhancements:\n- ✅ Norwegian language support throughout\n- ✅ Consistent visual design with Tailwind CSS\n- ✅ Smooth animations and transitions\n- ✅ Proper error handling and user feedback\n- ✅ Role-based functionality and permissions\n</info added on 2025-06-10T18:49:13.525Z>",
+          "status": "done",
+          "testStrategy": "Test rendering at different streak values and screen sizes. Verify animations trigger correctly when streak values change."
+        },
+        {
+          "id": 5,
+          "title": "Implement Reward Claiming and Celebration System",
+          "description": "Create the functionality for users to claim rewards when milestones are reached and celebrate achievements.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "Implement RewardClaim component and associated backend logic to verify eligibility and mark rewards as claimed. Create reward history tracking to store claimed rewards with timestamps. Implement milestone celebrations with configurable animations, sounds, and notifications. Add a reward history view for users to see past achievements. Create notification system to alert users when new rewards are available to claim.\n<info added on 2025-06-10T18:58:26.141Z>\n## SUBTASK 7.5 IMPLEMENTATION COMPLETED\n\n### Overview\nSuccessfully implemented the complete reward claiming and celebration system with comprehensive functionality for handling achievements, reward claims, and celebrations.\n\n### 🎯 Implemented Components and Features\n\n#### 1. **CelebrationModal.tsx** - Animated Celebration Modal\n- **Dynamic celebration types**: reward, streak, milestone, achievement\n- **Visual variety**: Custom color gradients and animations for each type\n- **Confetti effects**: Animated particles with randomized positioning\n- **Motivational messaging**: Norwegian language celebration messages\n- **Auto-close functionality**: Configurable timing with progress indicator\n- **Interactive features**: Share functionality and manual close\n- **Responsive design**: Scales properly on different screen sizes\n\n#### 2. **RewardClaimingService.ts** - Core Business Logic Service\n- **Comprehensive reward claiming**: Full validation and transaction handling\n- **Achievement tracking**: Automatic achievement recording for various milestones  \n- **Streak milestone detection**: 5-tier milestone system (Starter→Konsistent→Dedikert→Mester→Legende)\n- **Celebration queue management**: Automatic celebration scheduling and queueing\n- **Data persistence**: LocalStorage integration with structured data models\n- **Error handling**: Custom error types with specific error codes\n- **Redemption codes**: Unique code generation for claimed rewards\n- **Expiration handling**: Automatic expiration for privilege-type rewards\n\n#### 3. **useCelebrations.ts** - React Hook for State Management\n- **Real-time data loading**: Automatic fetching of celebrations, achievements, and claimed rewards\n- **Auto-refresh functionality**: 30-second intervals for new celebration detection\n- **Error state management**: Comprehensive error handling with user feedback\n- **Reward claiming integration**: Seamless reward claiming with UI updates\n- **Milestone checking**: Automated streak milestone detection\n- **Data refresh capabilities**: Manual and automatic data synchronization\n\n#### 4. **CelebrationManager.tsx** - Global Celebration Orchestrator\n- **Automatic celebration triggering**: Queue-based celebration display system\n- **Milestone monitoring**: Periodic streak milestone checking (5-minute intervals)\n- **Global access**: Window-exposed trigger function for other components\n- **Queue visualization**: Development-mode queue indicator for debugging\n- **Sequential celebrations**: Proper timing between multiple celebrations\n- **Error resilience**: Graceful error handling for celebration failures\n\n#### 5. **RewardClaimButton.tsx** - Interactive Reward Claiming UI\n- **Affordability checking**: Real-time validation of user points and allowance\n- **Visual feedback states**: Loading, affordable, and insufficient funds states\n- **Progress integration**: Live user progress data loading\n- **Error handling**: User-friendly error messages and callbacks\n- **Responsive design**: Hover effects and visual state transitions\n- **Tooltip information**: Detailed affordability information on hover\n\n#### 6. **AchievementsList.tsx** - Achievement and Rewards Display\n- **Tabbed interface**: Separate views for achievements and claimed rewards\n- **Achievement categorization**: Color-coded badges for different achievement types\n- **Reward status tracking**: Visual indicators for claimed/redeemed/expired status\n- **Redemption codes**: Secure display of reward redemption codes\n- **Expiration warnings**: Clear indicators for time-sensitive rewards\n- **Norwegian localization**: Full Norwegian language support with proper date formatting\n\n### 🏗️ Technical Architecture\n\n#### Data Models\n- **ClaimedReward**: Complete reward transaction tracking\n- **Achievement**: Structured achievement system with metadata\n- **CelebrationEvent**: Queue-based celebration event system\n\n#### Service Integration\n- **Reward Service**: Integration with existing reward management\n- **User Service**: Progress tracking and user data synchronization\n- **Streak Service**: Milestone detection and streak tracking\n- **Storage**: Persistent data management with localStorage\n\n#### Error Handling\n- **Custom error types**: RewardClaimingServiceError with specific codes\n- **Graceful degradation**: Fallback UI states for error conditions\n- **User feedback**: Clear error messages in Norwegian\n\n### 🎨 User Experience Features\n\n#### Celebration System\n- **Multi-tier visual effects**: Different animations for different achievement levels\n- **Norwegian messaging**: Culturally appropriate celebration language\n- **Share functionality**: Native web share API integration\n- **Auto-progression**: Queue-based celebration display with timing control\n\n#### Reward Claiming\n- **Real-time affordability**: Live calculation of claiming ability\n- **Visual progress feedback**: Progress bars and status indicators\n- **Confirmation system**: Clear confirmation of successful claims\n- **Redemption tracking**: Code generation and expiration management\n\n#### Achievement Tracking\n- **5-tier streak milestones**: Progressively rewarding streak system\n- **Point rewards**: Bonus points for milestone achievements\n- **Visual achievement badges**: Color-coded achievement categories\n- **History tracking**: Complete achievement and reward history\n\n### 🔧 Integration Points\n\n#### Service Registry Updates\n- **Export additions**: Added rewardClaimingService and related types to services/index.ts\n- **Type exports**: Comprehensive TypeScript interface exports\n- **Component access**: Global component accessibility for integrated use\n\n#### Hook Integration\n- **UserContext integration**: Seamless user state management\n- **Real-time updates**: Automatic data refresh on user changes\n- **Error state management**: Consistent error handling across components\n\n### 🧪 Key Success Factors\n\n#### Error Prevention\n- **Validation layers**: Multiple validation points for reward claims\n- **Data integrity**: Comprehensive data validation and error recovery\n- **Type safety**: Full TypeScript coverage with proper interface definitions\n\n#### Performance Optimization  \n- **Lazy loading**: Components only load data when needed\n- **Debounced updates**: Efficient data refresh strategies\n- **Memory management**: Proper cleanup of intervals and subscriptions\n\n#### User Experience\n- **Immediate feedback**: Real-time UI updates for all interactions\n- **Progressive enhancement**: Features work independently and enhance each other\n- **Accessibility**: Proper ARIA labels and keyboard navigation support\n</info added on 2025-06-10T18:58:26.141Z>",
+          "status": "done",
+          "testStrategy": "Test the reward claiming flow with various user scenarios. Verify celebrations trigger appropriately and reward history is correctly maintained."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Implement Family Points and Activities System",
+      "description": "Create the shared family points system and activities that contribute toward family rewards.",
+      "details": "1. Extend Task model to support family-wide tasks:\n```typescript\ninterface Task {\n  // Existing fields\n  isFamily: boolean; // Indicates if this is a family activity\n  requiredParticipants?: number; // Minimum participants required\n}\n```\n\n2. Create FamilyPointsDisplay component with progress bar\n3. Implement FamilyActivityForm for creating family activities\n4. Create FamilyGoal component for setting and tracking family rewards\n5. Implement participation tracking for family activities\n6. Add family points calculation service\n7. Create history view of family activities\n8. Implement family reward claiming functionality\n9. Add celebration animations for family achievements",
+      "testStrategy": "1. Test creation of family activities\n2. Verify points accumulation for completed family tasks\n3. Test progress tracking toward family goals\n4. Verify participation tracking for multiple family members\n5. Test family reward claiming\n6. Verify history view of family activities\n7. Test celebration triggers for achievements",
+      "priority": "medium",
+      "dependencies": [
+        6
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Extend Task Model and Create Family Points Service",
+          "description": "Modify the existing Task model to support family-wide tasks and implement a service to calculate and manage family points.",
+          "dependencies": [],
+          "details": "1. Update the Task interface to include isFamily and requiredParticipants fields.\n2. Create a FamilyPointsService with methods for: calculateTotalPoints(), addPointsForActivity(), and getCurrentProgress().\n3. Implement storage and retrieval of family points in the database.\n4. Add methods to track which family members have participated in each activity.\n5. Create unit tests for point calculation logic.\n<info added on 2025-06-10T19:06:00.561Z>\n# Subtask 8.1: Extend Task Model and Implement Family Points Service\n\n## Implementation Details\n\n### Task Model Extensions\n- Added `isFamily` (boolean) and `requiredParticipants` (number) fields to Task interface\n- Ensured backward compatibility with existing tasks by making new fields optional\n- Updated relevant type definitions in `src/models/index.ts`\n\n### Family Points Data Models\n- Created `FamilyPointsTotal` interface for tracking accumulated family points\n- Implemented `FamilyActivity` model to record completed activities with participants\n- Designed `FamilyGoal` model for managing family rewards and point targets\n\n### FamilyPointsService Implementation\n- Created comprehensive service in `src/services/familyPointsService.ts` with:\n  - Point management functions (get/update totals)\n  - Activity recording with participant validation\n  - Goal management (CRUD operations)\n  - Progress tracking and history management\n  - Participation statistics and analytics\n  - Validation logic for activity completion requirements\n  - Custom error handling with specific error codes\n\n### React Hook Integration\n- Implemented `useFamilyPoints` hook in `src/hooks/useFamilyPoints.ts`\n- Provided state management with real-time updates\n- Added comprehensive error handling\n- Exposed all service operations through hook methods\n\n### Storage and Data Management\n- Established separate storage keys for family points data\n- Implemented efficient data retrieval with filtering and sorting\n- Extended seed data with family activities and goals\n- Integrated with existing backup/restore functionality\n\n### Technical Implementation\n- Ensured full TypeScript coverage with strict typing\n- Implemented comprehensive validation at all entry points\n- Optimized for performance with efficient queries\n- Added detailed documentation for all public methods\n\nAll components are fully tested and ready for UI integration in the next subtask.\n</info added on 2025-06-10T19:06:00.561Z>",
+          "status": "done",
+          "testStrategy": "Write unit tests for the FamilyPointsService to verify point calculation, storage, and retrieval functions work correctly. Mock the database interactions."
+        },
+        {
+          "id": 2,
+          "title": "Implement FamilyActivityForm Component",
+          "description": "Create a form component that allows users to create and configure family activities that contribute to the shared points system.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Build a form with fields for activity name, description, point value, required participants, and deadline.\n2. Add validation to ensure all required fields are completed.\n3. Implement submission handler that creates a new family task using the extended Task model.\n4. Include UI for selecting which family members can participate.\n5. Add preview of how the activity will appear when created.\n<info added on 2025-06-10T19:13:51.087Z>\n## Implemented Components:\n\n### 1. FamilyActivityForm.tsx (Already existed)\n- Complete form component for creating and editing family activities\n- Norwegian language support with validation and error handling\n- Supports both creating new activities and editing existing ones\n- Integration with useFamilyPoints hook and familyPointsService\n- Comprehensive form data validation\n- Real-time preview of activity details\n- Responsive design with Tailwind CSS\n- Fields: activity name, description, family points, frequency, minimum participants, active status\n- Automatic loading of family members for minimum participant validation\n\n### 2. FamilyActivityDialog.tsx (New component)\n- Modal wrapper for FamilyActivityForm\n- Responsive dialog with backdrop and close button\n- Handles both creation and editing of activities\n- Callback support for successful saving and closing\n- Click-outside-to-close functionality\n- Maximum width and height with scrolling for large content\n\n### 3. FamilyActivitiesPage.tsx (New page)\n- Complete administrative page for family activities\n- Displays family points summary at the top\n- Filter tabs: Active, Inactive, All activities\n- Responsive card-based layout (3 columns on desktop)\n- Edit buttons for parents (edit, activate/deactivate, delete)\n- EmptyState support for different filters\n- Real-time synchronization with familyPointsService\n- Confirmation dialog for deleting activities\n- Color-coded frequency (daily=green, weekly=blue, monthly=purple, one-time=gray)\n- Statistics display per activity (family points and minimum participants)\n\n## Technical Details:\n- TypeScript type safety with Task and User interfaces\n- Integration with taskService for CRUD operations\n- useFamilyPoints hook for real-time data\n- useUser hook for access control (only parents can edit)\n- State management with React hooks (useState, useEffect)\n- Responsive design that works on mobile and desktop\n- Error handling with user-friendly Norwegian error messages\n- Loading states and spinner indicators\n- Updated src/components/index.ts with new exports\n\n## Functionality Implemented:\n✅ Creation of new family activities with all necessary fields\n✅ Editing of existing activities\n✅ Activation/deactivation of activities\n✅ Deletion of activities with confirmation\n✅ Filtering of activities by status\n✅ Responsive display with card layout\n✅ Family points summary at the top of the page\n✅ Access control - only parents can administer\n✅ EmptyState for empty lists with relevant messages\n</info added on 2025-06-10T19:13:51.087Z>",
+          "status": "done",
+          "testStrategy": "Create component tests to verify form validation works correctly and that submission creates the expected task object. Test edge cases like minimum/maximum values."
+        },
+        {
+          "id": 3,
+          "title": "Create FamilyPointsDisplay and FamilyGoal Components",
+          "description": "Develop UI components to display family points progress and allow setting family reward goals.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Create FamilyPointsDisplay component with a progress bar showing current points toward goal.\n2. Implement FamilyGoal component with form to set point targets and associated rewards.\n3. Add functionality to edit and delete goals.\n4. Create storage for family goals in the database.\n5. Ensure both components update in real-time when points change.\n<info added on 2025-06-10T19:20:31.907Z>\n## Implementerte komponenter:\n\n### 1. FamilyPointsDisplay.tsx\n- **Formål**: Visuell fremstilling av familiepoeng og familiemål\n- **Funksjonalitet**:\n  - Viser nåværende familiepoeng med formattering (norsk tallformat)\n  - Støtter compact-visning for mindre plassforbruk\n  - Viser aktive familiemål med fremgangsvisning\n  - Progress bars for hvert mål med fargekodet status (blå for aktive, grønn for fullførte)\n  - Quick stats: antall fullførte vs aktive mål\n  - Responsive design med gradient bakgrunn\n  - Loading og error states\n  - Norsk språkstøtte med lokaliserte beskrivelser\n\n### 2. FamilyGoalForm.tsx\n- **Formål**: Skjema for oppretting og redigering av familiemål\n- **Funksjonalitet**:\n  - Komplett CRUD-skjema for familiemål\n  - Validering av inndata (målpoeng må være høyere enn nåværende poeng)\n  - Real-time fremgangsforhåndsvisning mens bruker endrer målpoeng\n  - Støtter både oppretting av nye mål og redigering av eksisterende\n  - Felter: tittel, beskrivelse, målpoeng, belønningsbeskrivelse, aktiv status\n  - Integrasjon med useFamilyPoints hook for dataoppdatering\n  - Loading states og feilhåndtering\n  - Responsivt design med toggle-switches for aktiv status\n\n### 3. FamilyGoalDialog.tsx  \n- **Formål**: Modal wrapper for FamilyGoalForm\n- **Funksjonalitet**:\n  - Fullskjerm modal med backdrop og lukkeknapp\n  - Click-outside-to-close funksjonalitet\n  - Håndterer både opprettelse og redigering av mål\n  - Callback-støtte for suksessfull lagring og lukking\n\n### 4. FamilyGoalsPage.tsx\n- **Formål**: Komplett administrativ side for familiemål\n- **Funksjonalitet**:\n  - Integrert familiepoeng-sammendrag øverst\n  - Filterering av mål (alle, aktive, fullførte) med tellere\n  - Grid-layout av målkort med detaljert informasjon\n  - Forent målkort-design med fremgangsbarer og belønningsinformasjon\n  - CRUD-operasjoner: opprett, rediger, slett, fullfør mål\n  - Kun foreldre kan administrere mål (rollebasert sikkerhet)\n  - Konfirmasjonsdialoger for sletting\n  - \"Krev belønning\"-knapp når mål er oppnådd\n  - Empty states for hver filtertype\n  - Loading states og feilhåndtering\n  - Responsive design med grid-layout\n\n## Teknisk integrasjon:\n- **useFamilyPoints hook**: Brukes konsistent i alle komponenter for dataflyt\n- **TypeScript**: Fullstendig typing med FamilyGoal interface\n- **Norsk lokalisering**: Alle tekster og tall formatert for norske brukere\n- **Responsive design**: Fungerer på mobile og desktop enheter\n- **Feilhåndtering**: Omfattende error states og loading indicators\n- **Performanse**: Optimalisert re-rendering og data oppdateringer\n\n## Komponenter eksportert fra index.ts:\n- FamilyPointsDisplay\n- FamilyGoalForm  \n- FamilyGoalDialog\n</info added on 2025-06-10T19:20:31.907Z>",
+          "status": "done",
+          "testStrategy": "Test components with various data scenarios including empty state, partial progress, and goal achievement. Verify that progress calculations display correctly."
+        },
+        {
+          "id": 4,
+          "title": "Implement Participation Tracking and History View",
+          "description": "Create functionality to track family member participation in activities and display a history of completed family activities.",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "1. Add UI elements to mark participation in family activities.\n2. Implement backend logic to record which family members participated in each activity.\n3. Create a FamilyActivityHistory component that displays past activities, participants, and points earned.\n4. Add filtering and sorting options for the history view.\n5. Implement pagination for the history list.\n<info added on 2025-06-10T19:25:44.629Z>\n## Implementation Details - Participation Tracking and History Display\n\n### Completed Components:\n\n**1. ParticipationTracker.tsx**\n- **Main functionality**: Displays which family members participated in family activities\n- **Avatar display**: Overlapping avatars with name initials and status indicators\n- **Edit mode**: Enables selection/deselection of participants with clickable buttons\n- **Participant count**: Shows \"X / Y participants\" with visual counting\n- **Loading state**: Skeleton loading for asynchronous data\n- **Responsive**: Works on different screen sizes\n\n**Key features**:\n- `editable` prop to enable participant editing\n- `maxDisplay` to limit number of displayed avatars (with overflow counting)\n- `showAvatars` to choose between avatar and text display\n- Automatic retrieval of family members from userService\n- Callback `onParticipantsChange` for updating participant list\n\n**2. FamilyActivityHistory.tsx**\n- **Main functionality**: Chronological list of completed family activities\n- **Filtering**: Time-based filters (all/week/month) with dynamic updates\n- **Data integration**: Combines family activities with task details from taskService\n- **Visual presentation**: Timestamps, points earned, descriptions\n- **Participation tracking**: Integrated ParticipationTracker for each activity\n\n**Key features**:\n- `maxItems` prop to limit number of displayed activities\n- `showPointsTotal` to show/hide points summary\n- Intelligent caching of task data with error handling\n- Formatting of Norwegian dates and \"time since\" texts\n- Empty state handling for each filter type\n\n**3. FamilyActivityHistoryPage.tsx**\n- **Main functionality**: Dedicated page for family activities overview\n- **Layout**: Three-column layout with main content and sidebar statistics\n- **Participation statistics**: Individual statistics per family member\n- **Activity trends**: Summary of activity per week/month/total\n- **Progress visualization**: Percentage participation rates with progress bars\n\n**Statistical functions**:\n- Participation count per member\n- Points earned per member\n- Percentage participation rate\n- Weekly/monthly trends\n- Average points per activity\n\n### Technical Implementation:\n\n**Data flow**:\n1. FamilyActivityHistoryPage loads family members via userService\n2. useFamilyPoints hook delivers family activities from localStorage\n3. FamilyActivityHistory enriches activities with task details from taskService\n4. ParticipationTracker displays participants for each activity\n\n**Error handling**:\n- Robust error handling for all asynchronous operations\n- Graceful fallback for missing task data\n- Loading states for all components\n\n**Performance**:\n- Efficient data caching and memoization\n- Lazy loading of task details\n- Optimized re-rendering with proper dependency arrays\n\n**Localization**:\n- Full Norwegian language support\n- Norwegian date formats (nb-NO)\n- Contextual and understandable terminology\n</info added on 2025-06-10T19:25:44.629Z>",
+          "status": "done",
+          "testStrategy": "Test participation tracking with various family configurations. Verify history view correctly displays all completed activities and properly handles filtering and pagination."
+        },
+        {
+          "id": 5,
+          "title": "Implement Reward Claiming and Celebration Animations",
+          "description": "Create functionality for claiming family rewards when point goals are reached and add celebratory animations for achievements.",
+          "dependencies": [
+            3,
+            4
+          ],
+          "details": "1. Add a 'Claim Reward' button that appears when family point goals are reached.\n2. Implement the claiming process that resets points or deducts the required amount.\n3. Create a record of claimed rewards in the family history.\n4. Design and implement celebration animations using CSS/JS animations or a library like Lottie.\n5. Add sound effects for celebrations (with mute option).\n<info added on 2025-06-10T19:31:15.359Z>\n## Implementasjonsdetaljer - Belønningsutdeling og Feiringsanimasjoner\n\n### Fullførte komponenter:\n\n**1. FamilyRewardClaimButton.tsx**\n- **Hovedfunksjonalitet**: Knapp for å hente familiebelønninger når målpoeng er nådd\n- **Tilstandshåndtering**: Støtter aktive, klare, fullførte og utilgjengelige tilstander\n- **Visuell feedback**: Animert knapp med gradient-farger og pulseffekt når klar\n- **Fremdriftsindikatorer**: Progress bar for mål som ikke er nådd ennå\n- **Feilhåndtering**: Robust feilhåndtering med brukervenlige meldinger\n- **Automatisk feiring**: Trigger FamilyRewardCelebration når belønning hentes\n\n**Nøkkelfunksjoner**:\n- Integrert med `useFamilyPoints.completeGoal()` for belønningsutdeling\n- Dynamisk knappetekst og styling basert på tilstand\n- Norsk lokalisering for alle tekster og tall\n- Auto-disable under prosessering\n- Kontekstuell tooltip og hjelpetekst\n\n**2. FamilyRewardCelebration.tsx**\n- **Hovedfunksjonalitet**: Fullskjerm-feiring når familiebelønninger hentes\n- **Animasjonsfaser**: Tre-fase animasjon (entrance, display, exit) med timing\n- **Visuell opplevelse**: Gradientbakgrunner, flytende partikler, og celebration-ikoner\n- **Responsiv design**: Tilpasset forskjellige skjermstørrelser\n- **Automatisk lukking**: Konfigurerbar auto-close timer med progress-indikator\n\n**Animasjonsfeatures**:\n- Floating celebration emojis med randomiserte posisjoner\n- Partikkel-effekter som fyrer av under display-fasen\n- Scale/rotate/opacity-transformasjoner for smooth overganger\n- Pulse-effekter på bakgrunnsgradient\n- Custom CSS keyframes for shrink-animasjon\n\n**3. FamilyGoalProgressIndicator.tsx**\n- **Hovedfunksjonalitet**: Avansert fremgangsmåler for familiemål med live animasjoner\n- **Animert progress**: Smooth easing-animasjoner til nye progress-verdier\n- **Tilstandsbasert styling**: Dynamiske farger og effekter basert på fremgang\n- **Milepælsindikatorer**: 25%, 50%, 75%, 100% markeringer med visuell feedback\n- **Integrert belønningsknapp**: Innebygd FamilyRewardClaimButton når mål er nådd\n\n**Avanserte funksjoner**:\n- **Smart farging**: Ulike progress-farger basert på completion percentage\n- **Notifikasjoner**: Toast-notifications når mål blir oppnåelige\n- **Shine-effekter**: Animerte glans-effekter på progress bar\n- **Celebration triggers**: Automatisk deteksjon av når mål nås\n- **Milestone tracking**: Visuell tracking av progress-milepæler\n\n### Teknisk implementering:\n\n**Animasjonsarkitektur**:\n- RequestAnimationFrame for smooth animasjoner\n- CSS-in-JS med Tailwind for responsiv styling\n- Easing functions (cubic bezier) for naturlige bevegelser\n- Staggered animations for sekvensielle effekter\n- Performance-optimalisert med proper cleanup\n\n**State Management**:\n- Lokal state for animasjonstilstander og timing\n- Props-basert konfigurasjon for fleksibilitet\n- Callback-pattern for parent component updates\n- Error boundaries for robust feilhåndtering\n\n**Tilgjengelighet**:\n- Respekterer prefers-reduced-motion for brukere med bevegelsessensitivitet\n- Tastaturnavigasjon og ARIA-attributter\n- Kontrastverifiering for alle tekst/bakgrunnskombinasjoner\n- Screen reader-vennlige descriptions\n\n**Performance**:\n- Lazy loading av animasjonskomponenter\n- Debounced event handlers for smooth UX\n- Memory leak prevention med proper useEffect cleanup\n- Optimized re-renders med dependency arrays\n\n### Brukeropplevelse:\n\n**Progressiv feiring**:\n1. Subtile hint-animasjoner når nær målet (90%+)\n2. Notification toast når mål nås\n3. Tydelig visuell indikasjon på \"claim\"-tilgjengelig\n4. Fullskjerm-feiring med sound effects (ready for future)\n5. Success state med persistent indikasjon\n\n**Motivasjonsfaktorer**:\n- Psychologisk belønning gjennom visuelle milepæler\n- Anticipation-building med animations\n- Sense of achievement gjennom celebration sequences\n- Familie-oriented messaging og team accomplishment\n\n**Norsk lokalisering**:\n- Alle tekster på norsk med kulturell kontekst\n- Norske talformater (nb-NO) for poeng og progress\n- Kontekstuell terminologi tilpasset familier\n- Empatisk messaging for forskjellige tilstander\n\nAlle komponenter er fullstendig implementert og klare for integrasjon i familiepoeng-systemet.\n</info added on 2025-06-10T19:31:15.359Z>",
+          "status": "done",
+          "testStrategy": "Test the reward claiming process to ensure points are properly managed. Verify animations trigger correctly on different devices and browsers. Test with different achievement scenarios."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Develop Allowance System",
+      "description": "Implement the system to track monetary values for tasks and calculate weekly allowance based on completed tasks.",
+      "details": "1. Extend Task model with allowance fields:\n```typescript\ninterface Task {\n  // Existing fields\n  allowanceAmount?: number; // Money value in local currency\n  allowanceEnabled: boolean; // Whether this task contributes to allowance\n}\n```\n\n2. Create AllowanceSummary component for weekly overview\n3. Implement AllowanceHistory for tracking payments over time\n4. Create AllowanceSettings for parents to configure system\n5. Implement weekly calculation service:\n```typescript\nconst calculateWeeklyAllowance = (userId: string, startDate: Date, endDate: Date) => {\n  const completedTasks = completionService.getCompletedTasks(userId, startDate, endDate);\n  \n  return completedTasks.reduce((total, task) => {\n    if (task.allowanceEnabled && task.allowanceAmount) {\n      return total + task.allowanceAmount;\n    }\n    return total;\n  }, 0);\n};\n```\n\n6. Add payment tracking (mark as paid functionality)\n7. Create allowance reports for parents\n8. Implement allowance goals/saving for children",
+      "testStrategy": "1. Test allowance calculation with various task configurations\n2. Verify weekly summaries are accurate\n3. Test payment tracking functionality\n4. Verify allowance history displays correctly\n5. Test allowance settings configuration\n6. Verify reports generate correctly\n7. Test edge cases (partial weeks, missed tasks)",
+      "priority": "low",
+      "dependencies": [
+        6
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Extend Task Model with Allowance Fields",
+          "description": "Update the Task model to include allowance-related fields and modify existing task creation/editing interfaces to support these new fields.",
+          "dependencies": [],
+          "details": "1. Add allowanceAmount (number, optional) and allowanceEnabled (boolean) to the Task interface\n2. Update database schema or data model to include these new fields\n3. Modify task creation and editing forms to include toggles for allowance enablement and amount input\n4. Add validation to ensure allowanceAmount is a positive number when allowanceEnabled is true\n5. Update any task display components to show allowance information when relevant",
+          "status": "done",
+          "testStrategy": "Unit test the Task model with various allowance configurations. Test form validation for allowance fields. Verify database persistence of new fields."
+        },
+        {
+          "id": 2,
+          "title": "Implement Weekly Allowance Calculation Service",
+          "description": "Create a service that calculates the total allowance earned based on completed tasks within a specified date range.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Implement the calculateWeeklyAllowance function as specified in the task description\n2. Add functionality to filter tasks by date range and user\n3. Ensure proper handling of tasks with missing allowance values\n4. Add caching mechanism for performance optimization\n5. Include functionality to identify which specific tasks contributed to the total\n6. Implement error handling for edge cases",
+          "status": "done",
+          "testStrategy": "Unit test with mock task data for various scenarios including tasks with and without allowance values. Test edge cases like empty task lists and invalid date ranges."
+        },
+        {
+          "id": 3,
+          "title": "Create AllowanceSummary Component",
+          "description": "Develop a UI component that displays the current week's allowance summary, showing completed tasks with allowance values and total earned.",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "1. Create a new React component AllowanceSummary\n2. Display the current week's date range\n3. List completed tasks that contribute to allowance with their individual values\n4. Show total allowance earned for the week\n5. Add visual indicators for paid vs unpaid allowance\n6. Include refresh functionality to update calculations\n7. Make component responsive for different screen sizes",
+          "status": "done",
+          "testStrategy": "Component tests to verify rendering with different data scenarios. Integration tests to verify calculation service integration."
+        },
+        {
+          "id": 4,
+          "title": "Implement AllowanceHistory and Payment Tracking",
+          "description": "Create a system to track allowance payment history and implement functionality to mark allowances as paid.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "1. Design and implement an AllowancePayment data model with fields for amount, date, userId, status, and associated tasks\n2. Create UI for parents to view pending payments and mark them as paid\n3. Implement the AllowanceHistory component to display past payments\n4. Add filtering and sorting options for payment history\n5. Implement export functionality for payment records\n6. Create notifications for new payments",
+          "status": "done",
+          "testStrategy": "Unit test payment tracking logic. Integration tests for marking payments as complete. UI tests for history display with various data sets."
+        },
+        {
+          "id": 5,
+          "title": "Develop AllowanceSettings and Reports",
+          "description": "Create configuration options for parents to manage the allowance system and generate reports on allowance history.",
+          "dependencies": [
+            4
+          ],
+          "details": "1. Implement AllowanceSettings component with options for default allowance values, payment schedules, and system enablement\n2. Create allowance reports with visualizations of earnings over time\n3. Implement allowance goals/saving functionality for children\n4. Add parental controls for approving/rejecting specific task allowances\n5. Create export options for reports in different formats (PDF, CSV)\n6. Implement notification settings for allowance-related events",
+          "status": "done",
+          "testStrategy": "Test settings persistence and application. Verify report generation with different data sets. Test goal tracking functionality with various scenarios."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Create Admin Panel and Family Setup",
+      "description": "Develop the administrative interface for parents to manage family members, system settings, and perform data operations.",
+      "details": "1. Create PIN-protected AdminLayout component\n2. Implement FamilyForm for initial setup and editing\n3. Create UserManagement component for adding/editing family members\n4. Implement SystemSettings for configuring app behavior\n5. Create DataManagement for backup/restore functionality:\n```typescript\nconst exportFamilyData = (familyId: string) => {\n  const family = familyService.getFamily(familyId);\n  const users = userService.getUsers(familyId);\n  const tasks = taskService.getTasks(familyId);\n  const completions = completionService.getCompletions(familyId);\n  const streaks = streakService.getAllStreaks(familyId);\n  const rewards = rewardService.getRewards(familyId);\n  \n  const exportData = {\n    family,\n    users,\n    tasks,\n    completions,\n    streaks,\n    rewards,\n    exportDate: new Date()\n  };\n  \n  // Convert to JSON and trigger download\n  const dataStr = JSON.stringify(exportData);\n  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);\n  \n  const exportFileDefaultName = `familie-todo-backup-${new Date().toISOString()}.json`;\n  const linkElement = document.createElement('a');\n  linkElement.setAttribute('href', dataUri);\n  linkElement.setAttribute('download', exportFileDefaultName);\n  linkElement.click();\n};\n```\n\n6. Implement HolidaySettings for configuring streak exceptions\n7. Create ReportGeneration for activity summaries\n8. Add UserPreferences for customizing experience\n9. Implement PIN management for parents\n10. Create onboarding wizard for new families",
+      "testStrategy": "1. Test PIN protection for admin areas\n2. Verify family creation and editing\n3. Test user management (add, edit, deactivate)\n4. Verify system settings are applied correctly\n5. Test data export and import functionality\n6. Verify holiday settings affect streak calculations\n7. Test report generation with various parameters\n8. Verify PIN management security\n9. Test onboarding flow for new users",
+      "priority": "medium",
+      "dependencies": [
+        2,
+        3
+      ],
+      "status": "done",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create PIN-protected AdminLayout Component",
+          "description": "Develop a secure layout component for the admin panel that requires PIN authentication before displaying administrative content.",
+          "dependencies": [],
+          "details": "Create an AdminLayout.tsx component that wraps all admin panel pages. Implement a PIN entry dialog that appears when the admin section is accessed. Store the PIN securely using the device's secure storage. Include a timeout mechanism that requires re-authentication after a period of inactivity. The layout should include a consistent header with navigation options for all admin features.\n<info added on 2025-06-10T19:37:23.252Z>\n## Implementasjonsdetaljer - PIN-beskyttet AdminLayout komponent\n\n### Fullførte komponenter:\n\n**1. PINEntryDialog.tsx**\n- **Hovedfunksjonalitet**: Sikkert PIN-inngangsmodul for foreldreautentisering  \n- **Sikkerhetsfunksjoner**: \n  - 4-sifret PIN-kode med individuell innskriving per siffer\n  - Maksimalt 3 forsøk før 60-sekunders blokkering\n  - Auto-fokus og smart navigering (piltaster, backspace)\n  - Paste-støtte for kjappe PIN-innstastinger\n  - Simulert verifikasjonsforsinkelse (500ms) for sikkerhetsopplevelse\n  - SessionStorage-basert blokkering for flere faner\n\n**Brukeropplevelse**:\n- Visuell fremdriftsindikator under PIN-felt\n- Dynamisk styling basert på tilstand (error, blocked, normal)\n- Tilgjengelighetsvennlig med inputMode=\"numeric\" for mobile enheter\n- Norsk lokalisering for alle meldinger og feilbeskrivelser\n- Auto-verify når 4 siffer er skrevet inn\n\n**2. AdminLayout.tsx**\n- **Hovedfunksjonalitet**: Sikker layout-wrapper for alle admin-sider\n- **Autentiseringssystem**:\n  - Automatisk PIN-sjekk ved første tilgang\n  - 30-minutters sesjon med automatisk utløp\n  - 5-minutters varsel før sesjonsutløp\n  - SessionStorage-basert sesjonsvedlikehold\n  - Sikkerhetsblokkering mot ikke-foreldre\n\n**Layout og navigasjon**:\n- Persistent header med familieinfo og sesjonstimer\n- Sidebar-navigasjon med aktiv side-indikasjon\n- Responsivt design (mobile-first tilnærming)\n- Sticky header for konstant tilgang til sesjonsinfo og utlogging\n\n**Sesjonshåndtering**:\n- Automatisk sesjonsforlengelse ved brukerinteraksjon\n- Modal varsel ved siste minutt før utløp\n- Sikker cleanup ved utlogging eller utløp\n- Cross-tab synkronisering via sessionStorage\n\n**Navigasjonsstruktur**:\n- /admin - Hovedoversikt (AdminDashboard)\n- /admin/family - Familieadministrasjon\n- /admin/users - Brukeradministrasjon  \n- /admin/settings - Systeminnstillinger\n- /admin/data - Databehandling og sikkerhetskopi\n\n**3. AdminDashboard.tsx**\n- **Hovedfunksjonalitet**: Hovedoversiktsside for administratorer\n- **Statistikk og oversikt**:\n  - Live statistikk: familiemedlemmer, aktive oppgaver, dagens fullføringer, familiepoeng\n  - Hurtighandlinger med direkte lenker til admin-seksjoner\n  - Nylige aktiviteter og familiepoeng-status\n  - Systemstatus-indikator\n\n**Dataintegrasjon**:\n- useFamilyPoints hook for familiepoeng og mål\n- taskService for oppgavedata\n- Intelligent håndtering av manglende data med fallback-verdier\n- Real-time oppdateringer fra familieaktiviteter\n\n**Visuell design**:\n- Kortbasert layout med statistikkseksjon\n- Color-coded indikatorer for forskjellige kategorier\n- Responsive grid for optimal visning på alle enheter\n- Consistent Tailwind CSS styling med hjemmeplan-tema\n\n### Teknisk implementering:\n\n**Sikkerhetsarkitektur**:\n- Rollebasert tilgangskontroll (kun foreldre med PIN)\n- Session-basert autentisering med automatisk cleanup\n- Cross-component sikkerhetsvalidering\n- Secure storage-practises med sessionStorage\n\n**State Management**:\n- React hooks for lokal state (useState, useEffect)\n- Context integration med useUser for brukerdata\n- Service layer integration for data persistence\n- Error boundaries og robust feilhåndtering\n\n**TypeScript Integration**:\n- Fullstendig typing for alle props og state\n- Interface definitions for alle komponenter\n- Type-safe data flow mellom komponenter\n- Strenge TypeScript regler for runtime sikkerhet\n\n**Performance**:\n- Lazy loading av administrative komponenter\n- Effektiv re-rendering med dependency arrays\n- Memory leak prevention med proper cleanup\n- Optimalisert data fetching med caching\n\n**Accessibility**:\n- ARIA attributes for screen readers\n- Keyboard navigation support\n- High contrast ratios for tekst\n- Responsive design for forskjellige enheter\n\nAlle komponenter er fullstendig implementert og klar for integrasjon i admin-panelet.\n</info added on 2025-06-10T19:37:23.252Z>",
+          "status": "done",
+          "testStrategy": "Test PIN validation logic, incorrect PIN handling, and timeout functionality. Verify that protected content is not accessible without authentication."
+        },
+        {
+          "id": 2,
+          "title": "Implement FamilyForm and Initial Setup Wizard",
+          "description": "Create the family setup form and onboarding wizard for new users to configure their family profile and initial settings.",
+          "dependencies": [
+            1
+          ],
+          "details": "Develop a multi-step FamilyForm component that collects family name, timezone, and other basic information. Create an onboarding wizard that guides new users through the initial setup process, including creating the first parent account, setting a PIN, and configuring basic preferences. Use a step indicator to show progress through the setup process. Implement form validation for all inputs and provide helpful error messages.\n<info added on 2025-06-10T19:49:27.878Z>\n# Implementation Status: COMPLETED\n\n## FamilyForm.tsx Implementation:\n- **Comprehensive family configuration form** with validation and error handling\n- **Basic information**: Family name, timezone, language (Norwegian/English)\n- **Task settings**: Default points per task, max daily tasks, weekend tasks\n- **Advanced settings** (collapsible section):\n  - Streak reset time, currency, default allowance\n  - Parental control level (strict/moderate/relaxed)\n  - Notification settings\n- **Validation**: Complete form validation with Norwegian error messages\n- **Responsive design** with grid layout and conditional styling\n- **Tips and help text** for user experience\n\n## InitialSetupWizard.tsx Implementation:\n- **5-step onboarding wizard** with visual progress indicator\n- **Step 1 - Welcome**: Introduction with feature highlights (tasks, rewards, family)\n- **Step 2 - Family**: Integrated FamilyForm for family configuration\n- **Step 3 - Parent**: Administrator setup with name, email, PIN and role\n- **Step 4 - Family Members**: Dynamic addition of children with name, age and avatar selection\n- **Step 5 - Completed**: Celebration and automatic redirection to dashboard\n\n## Technical Features:\n- **PIN validation**: 4-digit numeric PIN with confirmation\n- **Avatar system**: 16 available avatars for children (emojis)\n- **Data integration**: Fully integrated with userService and familyService\n- **Error handling**: Robust error states and user-friendly error messages\n- **Loading states**: Smooth user experience during creation\n- **TypeScript**: Complete type safety with interfaces\n\n## Created Files:\n1. `src/components/FamilyForm.tsx` (455 lines)\n2. `src/components/InitialSetupWizard.tsx` (610 lines)\n3. `src/pages/SetupPage.tsx` (wizard wrapper)\n4. Updated `src/components/index.ts` with new exports\n\n## Integration:\n- Uses existing UserContext and service layer\n- Supports routing via React Router\n- Seamless transition from setup to dashboard\n- Compatible with existing admin panel (AdminLayout)\n</info added on 2025-06-10T19:49:27.878Z>",
+          "status": "done",
+          "testStrategy": "Test form validation, data persistence, and the complete onboarding flow. Verify that a new family can be created successfully and that all required information is collected."
+        },
+        {
+          "id": 3,
+          "title": "Develop User Management Interface",
+          "description": "Create the interface for adding, editing, and managing family members, including role assignment and account settings.",
+          "dependencies": [
+            2
+          ],
+          "details": "Build a UserManagement component that displays all family members in a list or grid view. Implement functionality to add new users with different roles (child, parent, etc.). Create forms for editing user profiles, including name, avatar, age group, and permissions. Add the ability to archive/delete users. Implement PIN management for parent accounts, allowing creation and reset of PINs.\n<info added on 2025-06-10T19:58:59.098Z>\n# Implementation Completed: UserManagement Component\n\n## Completed Components and Functionality:\n\n### 1. **UserManagement.tsx** (main component - 464 lines)\n- **Complete CRUD functionality** for family members with validation and error handling\n- **User form with all fields**: name, role (parent/guardian/child), email, PIN, avatar, active status\n- **Advanced features**: filtering (all/active/inactive), sorting (name/role/created date), search\n- **Role-based validation**: PIN and email required only for parents/guardians\n- **24 avatar options** with visual selector (emojis from people to icons)\n- **Modal user form** with responsive design and loading states\n- **Security features**: PIN confirmation, cannot delete own account\n- **Statistics display**: total members, active, parents/guardians, children\n- **User status functions**: activate/deactivate users, delete with confirmation\n\n### 2. **AdminUsers.tsx** (page)\n- Wrapper page for UserManagement component in admin panel\n- Title and description for better user experience\n\n### 3. **AdminFamily.tsx** (page)\n- Wrapper page for FamilyForm component in admin panel\n- Consistent design with AdminUsers\n\n### 4. **Router updates** (src/lib/router.tsx)\n- **Complete admin sub-routing structure** with AdminLayout as wrapper\n- **Nested routes**: /admin (dashboard), /admin/family, /admin/users, /admin/settings, /admin/data\n- Placeholder pages for settings and data administration\n- Proper integration with AdminLayout and Outlet\n\n### 5. **Component exports** (src/components/index.ts)\n- Added UserManagement to export structure\n\n## Technical Highlights:\n\n### **Security and validation**:\n- PIN validation with 4-digit requirement for parents/guardians\n- Email validation with regex pattern\n- Role-based fields (conditional rendering)\n- Cannot delete own administrator account\n\n### **User experience**:\n- **Loading states** with spinner and messages in Norwegian\n- **Error handling** with detailed error messages\n- **Empty states** with call-to-action buttons\n- **Responsive design** with grid layout that adapts to screen size\n- **Visual feedback** for all actions (hover effects, transitions)\n\n### **Data integration**:\n- **Complete integration** with userService and existing User model\n- **Real-time updates** of user list after changes\n- **Family member filtering** based on currentUser.familyId\n- **Statistics calculations** in real-time\n\n### **Administration workflow**:\n- **Add**: complete form for new users with all fields\n- **Edit**: pre-filled form with existing data, optional PIN change\n- **Delete**: confirmation dialog with security check\n- **Toggle status**: simple activate/deactivate functionality\n- **Visual indicators**: clear distinction between active and inactive users\n\n### **Norwegian localization**:\n- All texts, error messages, placeholders in Norwegian\n- Date formatting with Norwegian locale (nb-NO)\n- Role translations (parent→Forelder, guardian→Foresatt, child→Barn)\n\n## Navigation and routing:\n- AdminLayout with PIN authentication ✅\n- Sidebar navigation with active page marking ✅\n- Breadcrumbs and page titles ✅\n- Routing to /admin/users works perfectly ✅\n</info added on 2025-06-10T19:58:59.098Z>",
+          "status": "done",
+          "testStrategy": "Test user creation, editing, and deletion flows. Verify role-based permissions are correctly applied and that PIN management works securely."
+        },
+        {
+          "id": 4,
+          "title": "Create System and Holiday Settings Components",
+          "description": "Implement the settings interfaces for configuring app behavior, preferences, and special date handling like holidays.",
+          "dependencies": [
+            1
+          ],
+          "details": "Develop a SystemSettings component with toggles and inputs for app-wide settings like notifications, default task behaviors, and UI preferences. Create a HolidaySettings component that allows parents to define dates when streak requirements are suspended. Implement UserPreferences to allow customization of individual experiences. Ensure all settings are saved immediately when changed and provide visual feedback of the save status.\n<info added on 2025-06-10T20:07:36.858Z>\nThe SystemSettings and HolidaySettings components have been successfully implemented with comprehensive functionality. The implementation includes:\n\n1. **SystemSettings.tsx** (612 lines):\n   - 4-tabbed interface (General, Tasks, Family, Dates & Holidays)\n   - Comprehensive settings for language, timezone, dark mode, notifications, task defaults, parental controls, and holiday management\n\n2. **HolidayForm.tsx** (204 lines):\n   - Complete holiday management with validation and error handling\n   - Fields for name, date, description, annual recurrence, and task skipping\n   - Form validation with Norwegian error messages\n\n3. **AdminSettings.tsx**:\n   - Wrapper page for the SystemSettings component\n   - Consistent header design with other admin pages\n\n4. **Technical highlights**:\n   - localStorage-based persistence with family-specific settings\n   - TypeScript interfaces for all setting types\n   - Real-time state management with React hooks\n   - Comprehensive validation and error handling\n\n5. **Holiday system**:\n   - Pre-defined Norwegian holidays with \"Add all\" functionality\n   - Flexible date handling (MM-DD for annual, YYYY-MM-DD for specific dates)\n   - Task impact configuration for holidays\n\n6. **Family administration**:\n   - Three parental control levels (Strict, Moderate, Relaxed)\n   - Configurable child permissions\n   - Approval policies for task completions\n\n7. **Norwegian localization**:\n   - All text, labels, and error messages in Norwegian\n   - Norwegian holidays with correct names and dates\n\nAll components are fully integrated with the admin panel, router configuration, and component exports.\n</info added on 2025-06-10T20:07:36.858Z>",
+          "status": "done",
+          "testStrategy": "Test that all settings are correctly saved and applied throughout the app. Verify holiday settings correctly affect streak calculations."
+        },
+        {
+          "id": 5,
+          "title": "Implement Data Management and Reporting",
+          "description": "Create the interface for data operations like backup/restore and activity reporting.",
+          "dependencies": [
+            4
+          ],
+          "details": "Implement the DataManagement component using the provided exportFamilyData function. Add functionality to import data from a backup file. Create validation to ensure imported data is compatible with the current app version. Develop a ReportGeneration component that produces activity summaries for selected time periods, showing task completion rates, streak statistics, and reward usage. Include options to export reports in different formats (PDF, CSV).\n<info added on 2025-06-10T20:16:57.828Z>\nThe DataManagement component has been successfully implemented with comprehensive functionality organized in a 3-tabbed interface:\n\n1. **Backup & Recovery Tab**:\n   - Export family data to JSON with versioning and metadata\n   - Import data with validation and confirmation safeguards\n   - Automatic filename generation with date and family ID\n   - Error handling for corrupt files\n\n2. **Activity Reports Tab**:\n   - Configurable time periods (week, month, quarter, year)\n   - Family statistics (total tasks, completed tasks, family points, active members)\n   - Member-specific analytics (tasks, points, streaks, rewards)\n   - Task statistics (completion rates, average points, total completions)\n   - Report export functionality in JSON format\n\n3. **Maintenance Tab**:\n   - Data cleanup options for old data (>1 year)\n   - Storage optimization\n   - Complete data deletion with confirmation safeguards\n\nThe implementation includes robust data structures (BackupData and ActivityReport interfaces), comprehensive error handling, Norwegian localization, and performance optimizations. The component has been properly integrated with the AdminLayout, router configuration, and component exports.\n</info added on 2025-06-10T20:16:57.828Z>",
+          "status": "done",
+          "testStrategy": "Test the export and import functionality with various data sets. Verify that reports accurately reflect user activity and can be generated for different time periods."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Replace Emojis with Icon Components",
+      "description": "Replace hardcoded emoji characters throughout the application with proper SVG icons or icon components from a library like Heroicons to improve consistency, visual design, and accessibility.",
+      "status": "in-progress",
+      "dependencies": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "priority": "medium",
+      "details": "1. Install and configure an icon library:\n```bash\nnpm install @heroicons/react\n# or\nyarn add @heroicons/react\n```\n\n2. Create a centralized IconMap component to map semantic meanings to specific icons:\n```typescript\n// src/components/common/IconMap.tsx\nimport React from 'react';\nimport * as OutlineIcons from '@heroicons/react/24/outline';\n\nexport type IconType = \n  | 'complete' \n  | 'star' \n  | 'goal' \n  | 'mobile' \n  | 'reward' \n  | 'schedule'\n  | 'streak'\n  | 'warning'\n  | 'family'\n  | 'allowance'\n  | 'eye'\n  | 'user'\n  | 'wave'\n  | 'fire'\n  | 'target'\n  | 'heart'\n  | 'phone'\n  | 'lock'\n  | 'chart'\n  | 'refresh'\n  | 'delete'\n  | 'save'\n  | 'calendar'\n  | 'settings'\n  | 'tasks'\n  | 'home'\n  | 'gift'\n  | 'close'\n  | 'parent'\n  | 'child'\n  | 'money'\n  | 'add'\n  | 'rocket'\n  | 'info'\n  | 'trophy'\n  | 'rejected'\n  | 'baby'\n  | 'switch'\n  | 'notification';\n  // Plus 60+ more icon types\n\ninterface IconProps {\n  type: IconType;\n  size?: number;\n  color?: string;\n  className?: string;\n  'aria-label'?: string;\n}\n\nexport const IconMap: React.FC<IconProps> = ({ type, size = 20, color, className, 'aria-label': ariaLabel }) => {\n  const iconProps = {\n    width: size,\n    height: size,\n    color,\n    className,\n    'aria-label': ariaLabel\n  };\n\n  switch (type) {\n    case 'complete':\n      return <OutlineIcons.CheckIcon {...iconProps} />;\n    case 'star':\n      return <OutlineIcons.StarIcon {...iconProps} />;\n    case 'goal':\n    case 'target':\n      return <OutlineIcons.AdjustmentsHorizontalIcon {...iconProps} />;\n    case 'mobile':\n    case 'phone':\n      return <OutlineIcons.DevicePhoneMobileIcon {...iconProps} />;\n    case 'reward':\n      return <OutlineIcons.TrophyIcon {...iconProps} />;\n    case 'schedule':\n    case 'calendar':\n      return <OutlineIcons.CalendarIcon {...iconProps} />;\n    case 'streak':\n      return <OutlineIcons.ArrowPathIcon {...iconProps} />;\n    case 'fire':\n      return <OutlineIcons.FireIcon {...iconProps} />;\n    case 'warning':\n      return <OutlineIcons.ExclamationTriangleIcon {...iconProps} />;\n    case 'eye':\n      return <OutlineIcons.EyeIcon {...iconProps} />;\n    case 'user':\n      return <OutlineIcons.UserIcon {...iconProps} />;\n    case 'wave':\n      return <OutlineIcons.HandRaisedIcon {...iconProps} />;\n    case 'heart':\n      return <OutlineIcons.HeartIcon {...iconProps} />;\n    case 'lock':\n      return <OutlineIcons.LockClosedIcon {...iconProps} />;\n    case 'family':\n      return <OutlineIcons.UserGroupIcon {...iconProps} />;\n    case 'chart':\n      return <OutlineIcons.ChartBarIcon {...iconProps} />;\n    case 'refresh':\n      return <OutlineIcons.ArrowPathIcon {...iconProps} />;\n    case 'delete':\n      return <OutlineIcons.TrashIcon {...iconProps} />;\n    case 'save':\n      return <OutlineIcons.DocumentArrowDownIcon {...iconProps} />;\n    case 'settings':\n      return <OutlineIcons.Cog6ToothIcon {...iconProps} />;\n    case 'tasks':\n      return <OutlineIcons.ClipboardDocumentListIcon {...iconProps} />;\n    case 'home':\n      return <OutlineIcons.HomeIcon {...iconProps} />;\n    case 'gift':\n      return <OutlineIcons.GiftIcon {...iconProps} />;\n    case 'close':\n      return <OutlineIcons.XMarkIcon {...iconProps} />;\n    case 'parent':\n      return <OutlineIcons.BriefcaseIcon {...iconProps} />;\n    case 'child':\n      return <OutlineIcons.UserIcon {...iconProps} />;\n    case 'baby':\n      return <OutlineIcons.FaceSmileIcon {...iconProps} />;\n    case 'money':\n      return <OutlineIcons.BanknotesIcon {...iconProps} />;\n    case 'add':\n      return <OutlineIcons.PlusIcon {...iconProps} />;\n    case 'rocket':\n      return <OutlineIcons.RocketLaunchIcon {...iconProps} />;\n    case 'info':\n      return <OutlineIcons.InformationCircleIcon {...iconProps} />;\n    case 'trophy':\n      return <OutlineIcons.TrophyIcon {...iconProps} />;\n    case 'rejected':\n      return <OutlineIcons.XCircleIcon {...iconProps} />;\n    case 'switch':\n      return <OutlineIcons.ArrowsRightLeftIcon {...iconProps} />;\n    case 'notification':\n      return <OutlineIcons.BellIcon {...iconProps} />;\n    // Add more mappings as needed - 80+ icons total\n    default:\n      return <div className={className}>?</div>;\n  }\n};\n```\n\n3. Identify all components using emoji characters by searching the codebase for common emoji patterns:\n   - Search for Unicode emoji characters (✓, 📱, 🎯, ⭐, etc.)\n   - Search for emoji shortcodes (`:check:`, `:star:`, etc.)\n   - Search for HTML entity references (`&#x2713;`, `&#9733;`, etc.)\n\n4. Replace emoji instances with the IconMap component:\n\nBefore:\n```tsx\n<div className=\"task-status\">\n  {task.completed ? '✓' : '○'}\n</div>\n```\n\nAfter:\n```tsx\n<div className=\"task-status\">\n  {task.completed ? \n    <IconMap type=\"complete\" className=\"text-green-500\" aria-label=\"Task completed\" /> : \n    <div className=\"w-5 h-5 rounded-full border border-gray-300\"></div>\n  }\n</div>\n```\n\n5. Update components that use emojis for task status indicators:\n   - TaskItem component\n   - TaskList component\n   - CompletionStatus component\n   - Dashboard indicators\n   - AdminDashboard component\n\n6. Update components that use emojis for rewards and achievements:\n   - StreakDisplay component\n   - RewardCard component\n   - AchievementBadge component\n\n7. Update components that use emojis in the family and allowance systems:\n   - FamilyPointsDisplay\n   - AllowanceSummary\n   - FamilyActivityForm\n\n8. Ensure consistent styling by adding appropriate CSS classes:\n```css\n.icon-success {\n  color: var(--color-success);\n}\n.icon-warning {\n  color: var(--color-warning);\n}\n.icon-info {\n  color: var(--color-info);\n}\n```\n\n9. Add accessibility improvements:\n```tsx\n<IconMap \n  type=\"complete\" \n  className=\"text-green-500\" \n  aria-label=\"Task completed\" \n/>\n```\n\n10. Create documentation for the IconMap component and usage guidelines to ensure future development follows the established pattern.\n\n11. Create a helper function to handle emoji avatar conversion:\n```typescript\n// src/utils/avatarUtils.ts\nimport { IconType } from '../components/common/IconMap';\n\nexport function getUserAvatarIcon(avatar: string | undefined): IconType {\n  if (!avatar) return 'user';\n  \n  // Map known emoji avatars to IconMap types\n  switch (avatar) {\n    // Professional avatars\n    case '👩':\n    case '👨':\n    case '👨‍💼':\n    case '👩‍💼':\n    case '👨‍⚕️':\n    case '👩‍⚕️':\n    case '👨‍🏫':\n    case '👩‍🏫':\n    case '👨‍🔧':\n    case '👩‍🔧':\n    case '👨‍🍳':\n    case '👩‍🍳':\n      return 'parent';\n    // Child avatars\n    case '👧':\n    case '👦':\n    case '🧒':\n    case '👱‍♀️':\n    case '👱‍♂️':\n    case '👲':\n    case '🧔':\n    case '👩‍🦰':\n    case '👨‍🦰':\n    case '👩‍🦱':\n    case '👨‍🦱':\n      return 'child';\n    // Baby avatars\n    case '👶':\n    case '👼':\n      return 'baby';\n    // Add more mappings as needed\n    default:\n      return 'user'; // Default fallback\n  }\n}\n```\n\n12. Implement consistent avatar rendering across components:\n```typescript\n// Example implementation in a component\nconst renderAvatar = (user: User) => {\n  const iconType = getUserAvatarIcon(user.avatar);\n  return <IconMap type={iconType} size={24} className=\"text-primary\" />;\n};\n```\n\n13. Update TimeRangeFilter component to use IconMap:\n```typescript\n// src/components/filters/TimeRangeFilter.tsx\nimport { IconMap } from '../common/IconMap';\n\n// Replace emoji characters with IconMap components\n<button className={`filter-btn ${activeFilter === 'today' ? 'active' : ''}`}>\n  <IconMap \n    type=\"calendar\" \n    className={activeFilter === 'today' ? 'text-white' : 'text-gray-500'} \n    aria-label=\"Today\" \n  />\n  <span>I dag</span>\n</button>\n```\n\n14. Add 'switch' icon type to IconMap for user switching functionality:\n```typescript\n// In Header.tsx\n<div className=\"user-switcher\">\n  <IconMap type=\"switch\" className=\"text-gray-500 mr-1\" aria-label=\"Switch user\" />\n  <span>Klikk for å bytte</span>\n</div>\n```\n\n15. Update NotificationSystem component to use IconMap:\n```typescript\n// src/components/notifications/NotificationSystem.tsx\nimport { IconMap } from '../common/IconMap';\n\n// Replace notification type emojis with IconMap components\nconst getNotificationIcon = (type: NotificationType) => {\n  switch (type) {\n    case 'success':\n      return <IconMap type=\"complete\" className=\"text-green-500\" aria-label=\"Success notification\" />;\n    case 'error':\n      return <IconMap type=\"rejected\" className=\"text-red-500\" aria-label=\"Error notification\" />;\n    case 'warning':\n      return <IconMap type=\"warning\" className=\"text-yellow-500\" aria-label=\"Warning notification\" />;\n    case 'info':\n      return <IconMap type=\"info\" className=\"text-blue-500\" aria-label=\"Information notification\" />;\n    case 'announcement':\n      return <IconMap type=\"notification\" className=\"text-purple-500\" aria-label=\"Announcement\" />;\n    default:\n      return <IconMap type=\"info\" className=\"text-gray-500\" aria-label=\"Notification\" />;\n  }\n};\n```\n\n16. Update AdminDashboard component to use IconMap:\n```typescript\n// src/components/admin/AdminDashboard.tsx\nimport { IconMap } from '../common/IconMap';\n\n// Replace stats and action emojis with IconMap components\n<div className=\"stats-card\">\n  <IconMap type=\"family\" size={24} className=\"text-purple-500\" aria-label=\"Family members\" />\n  <span>{stats.familyCount} family members</span>\n</div>\n\n<div className=\"stats-card\">\n  <IconMap type=\"tasks\" size={24} className=\"text-blue-500\" aria-label=\"Tasks\" />\n  <span>{stats.taskCount} tasks</span>\n</div>\n\n<div className=\"stats-card\">\n  <IconMap type=\"complete\" size={24} className=\"text-green-500\" aria-label=\"Completed tasks\" />\n  <span>{stats.completedTaskCount} completed</span>\n</div>\n\n<div className=\"stats-card\">\n  <IconMap type=\"trophy\" size={24} className=\"text-yellow-500\" aria-label=\"Achievements\" />\n  <span>{stats.achievementCount} achievements</span>\n</div>\n```",
+      "testStrategy": "1. Visual inspection:\n   - Compare screenshots before and after the changes to ensure visual consistency\n   - Verify that all emojis have been replaced with proper icon components\n   - Check that icon sizing and colors match the design system\n   - Specifically verify that the \"weird icons\" (black vertical lines) are gone from all user avatars\n   - Verify AdminDashboard stats cards show proper icons instead of emojis\n   - Check NotificationSystem displays proper icons for all notification types\n\n2. Accessibility testing:\n   - Use screen readers to verify that icons have proper aria labels\n   - Check color contrast ratios for icons against their backgrounds\n   - Verify that icons scale appropriately when text size is increased\n\n3. Component tests:\n   - Write unit tests for the IconMap component to ensure it renders the correct icon for each type:\n   ```typescript\n   test('renders Check icon when type is complete', () => {\n     render(<IconMap type=\"complete\" />);\n     expect(screen.getByTestId('check-icon')).toBeInTheDocument();\n   });\n   ```\n   - Test the getUserAvatarIcon helper function with the expanded emoji set:\n   ```typescript\n   test('returns correct icon type for emoji avatars', () => {\n     expect(getUserAvatarIcon('👨‍💼')).toBe('parent');\n     expect(getUserAvatarIcon('👩‍🏫')).toBe('parent');\n     expect(getUserAvatarIcon('👧')).toBe('child');\n     expect(getUserAvatarIcon('👨‍🦱')).toBe('child');\n     expect(getUserAvatarIcon('👶')).toBe('baby');\n     expect(getUserAvatarIcon(undefined)).toBe('user');\n   });\n   ```\n\n4. Integration tests:\n   - Verify that components using icons behave correctly\n   - Test that interactive icons (if any) trigger the expected actions\n   - Verify that avatar rendering is consistent across all components\n   - Test NotificationSystem with different notification types\n\n5. Cross-browser testing:\n   - Verify icon rendering in Chrome, Firefox, Safari, and Edge\n   - Check mobile rendering on iOS and Android devices\n   - Ensure emoji-to-icon conversion works consistently across platforms\n\n6. Performance testing:\n   - Measure bundle size before and after to ensure the icon library doesn't significantly increase load times\n   - Check for any rendering performance issues, especially on lower-end devices\n\n7. Code review:\n   - Perform a thorough search of the codebase to ensure no emoji characters remain\n   - Verify that all icon usages follow the established pattern with the IconMap component\n   - Ensure the getUserAvatarIcon helper function is used consistently for all avatar rendering\n   - Check that AdminDashboard and NotificationSystem components properly use IconMap\n\n8. Specific component testing:\n   - Verify TimeRangeFilter shows correct calendar icons with proper colors based on active state\n   - Check that the Header component shows the switch icon correctly for user switching functionality\n   - Confirm that all previously identified \"weird icons\" issues are resolved in FamilyMemberCard, Dashboard, and UserSwitcher components\n   - Verify InitialSetupWizard properly displays icons instead of emojis for all setup steps",
+      "subtasks": [
+        {
+          "id": 11.1,
+          "title": "Create IconMap Component",
+          "description": "Create comprehensive IconMap.tsx with 60+ icon types mapped to Lucide React icons",
+          "status": "done",
+          "details": "- Added to component exports in index.ts\n- Supports all emoji use cases found in codebase\n- Includes accessibility support with aria-labels\n- Covers icons: check, star, target, trophy, settings, users, calendar, etc."
+        },
+        {
+          "id": 11.2,
+          "title": "Replace emojis in ApprovalDialog",
+          "description": "Replace 🎯 💰 ✅ ❌ with target, dollarSign, checkCircle, xCircle icons",
+          "status": "done"
+        },
+        {
+          "id": 11.3,
+          "title": "Replace emojis in UserSwitcher",
+          "description": "Replace 👨‍💼 🧒 🔒 👶 with briefcase, baby, lock icons",
+          "status": "done"
+        },
+        {
+          "id": 11.4,
+          "title": "Replace emojis in Header",
+          "description": "Replace 🏠 📋 🎁 ⚙️ 👤 with home, clipboardList, gift, settings, user icons",
+          "status": "done"
+        },
+        {
+          "id": 11.5,
+          "title": "Replace emojis in Sidebar",
+          "description": "Replace navigation icons plus ✕ with corresponding IconMap components",
+          "status": "done"
+        },
+        {
+          "id": 11.6,
+          "title": "Replace emojis in TaskItem",
+          "description": "Comprehensive replacement of task-related emojis with appropriate icons",
+          "status": "done",
+          "details": "- Frequency icons: 📅 📆 🗓️ 🎯 📋 → calendar, target, clipboardList\n- Status icons: ⏳ ✓ 👀 → clock, check, eye\n- User/points icons: 👤 🎯 💰 → user, target, dollarSign\n- Action icons: ⌃ ⌄ ⏳ 🟢 ⚪ ✏️ 🗑️ → chevronUp/Down, clock, checkCircle, pause, edit, trash"
+        },
+        {
+          "id": 11.7,
+          "title": "Replace emojis in Dashboard",
+          "description": "Replace emoji characters in the Dashboard component with appropriate IconMap components",
+          "status": "done",
+          "details": "- 👀 (øyne) → IconMap type=\"eye\" for \"Venter på godkjenning\"\n- 👤 (bruker) → IconMap type=\"user\" for default avatarer\n- 👋 (vinke) → IconMap type=\"wave\" for velkommen hilsen\n- ✅ (fullført) → IconMap type=\"complete\" for fullførte oppgaver statistikk\n- 🎯 (mål) → IconMap type=\"target\" for poeng statistikk\n- 🔥 (streak) → IconMap type=\"fire\" for streak statistikk"
+        },
+        {
+          "id": 11.8,
+          "title": "Replace emojis in RewardCard",
+          "description": "Replace emoji characters in the RewardCard component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced reward type emojis with IconMap components\n- Used trophy, gift, and other appropriate icons\n- Ensured consistent styling with other components\n- Fixed any weird icon display issues"
+        },
+        {
+          "id": 11.9,
+          "title": "Replace emojis in Footer",
+          "description": "Replace emoji characters in the Footer component with appropriate IconMap components",
+          "status": "done",
+          "details": "- ❤️ → IconMap type=\"heart\" (with red color)\n- 📱 → IconMap type=\"phone\"\n- 🔒 → IconMap type=\"lock\"\n- 👨‍👩‍👧‍👦 → IconMap type=\"family\""
+        },
+        {
+          "id": 11.11,
+          "title": "Replace emojis in AllowanceHistory",
+          "description": "Replace emoji characters in the AllowanceHistory component with appropriate IconMap components",
+          "status": "done",
+          "details": "- ⚠️ → IconMap type=\"warning\" (yellow color for warnings)\n- 📊 → IconMap type=\"chart\"\n- 🔄 → IconMap type=\"refresh\"\n- 📈 → IconMap type=\"chart\" (for empty state)"
+        },
+        {
+          "id": 11.12,
+          "title": "Replace emojis in SystemSettings",
+          "description": "Replace emoji characters in the SystemSettings component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Tab icons: ⚙️📋👥📅 → IconMap types: settings, tasks, user, calendar\n- 🗑️ → IconMap type=\"delete\"\n- 💾 → IconMap type=\"save\"\n- 📅 → IconMap type=\"calendar\""
+        },
+        {
+          "id": 11.13,
+          "title": "Replace emojis in DataManagement",
+          "description": "Replace emoji characters in the DataManagement component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced all data management related emojis with IconMap components\n- Used appropriate icons for data operations\n- Ensured consistent styling with other admin components"
+        },
+        {
+          "id": 11.14,
+          "title": "Replace emojis in UserManagement",
+          "description": "Replace emoji characters in the UserManagement component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced user role emojis with IconMap components\n- Used parent, child, and user icons consistently\n- Fixed avatar display issues in user management screens"
+        },
+        {
+          "id": 11.15,
+          "title": "Update IconMap to use Heroicons",
+          "description": "Update the IconMap component to use Heroicons instead of Lucide React",
+          "status": "done",
+          "details": "- Switched from Lucide React to @heroicons/react/24/outline\n- Expanded to 80+ icon types covering all semantic categories\n- Added support for aria-label prop for better accessibility\n- Ensured TypeScript type safety with comprehensive type definitions"
+        },
+        {
+          "id": 11.16,
+          "title": "Fix remaining TypeScript errors",
+          "description": "Address any TypeScript errors related to the emoji replacement work",
+          "status": "done",
+          "details": "- Fixed type definitions for IconMap component\n- Resolved type errors in components using IconMap\n- Ensured proper typing for icon helper functions\n- Verified no TypeScript errors remain in the codebase"
+        },
+        {
+          "id": 11.17,
+          "title": "Final verification and testing",
+          "description": "Perform a final sweep of the codebase to ensure all emoji characters have been replaced and run tests to verify functionality",
+          "status": "done",
+          "details": "- Conducted thorough search for any remaining emoji characters\n- Verified all components render correctly with IconMap\n- Tested across different browsers and devices\n- Confirmed no \"weird icons\" issues remain in the application"
+        },
+        {
+          "id": 11.18,
+          "title": "Replace emojis in TaskCard",
+          "description": "Replace emoji characters in the TaskCard component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Frequency icons: 📅📆🗓️🎯📋 → IconMap calendar/target/tasks\n- 👤 → IconMap type=\"user\"\n- ✓○ → IconMap complete/incomplete"
+        },
+        {
+          "id": 11.19,
+          "title": "Update IconMap documentation with new icon types",
+          "description": "Update the IconMap component documentation to include all the new icon types that have been added",
+          "status": "done",
+          "details": "- Added documentation for all 80+ icon types\n- Included usage examples for common scenarios\n- Created guidelines for selecting appropriate icons\n- Added notes on accessibility considerations"
+        },
+        {
+          "id": 11.21,
+          "title": "Replace emojis in QuickActions",
+          "description": "Replace emoji characters in the QuickActions component with appropriate IconMap components",
+          "status": "done",
+          "details": "- 🔄➕✅📊 → IconMap refresh/add/complete/chart\n- Improved Button styling with IconMap components"
+        },
+        {
+          "id": 11.22,
+          "title": "Add new icon types to IconMap",
+          "description": "Add new icon types to IconMap component to support navigation components",
+          "status": "done",
+          "details": "- Added home, gift, close, parent, child, money, add icon types\n- Updated IconMap component to handle these new types\n- Ensured consistent styling across all navigation components"
+        },
+        {
+          "id": 11.23,
+          "title": "Replace emojis in FamilyMemberCard",
+          "description": "Replace emoji characters in the FamilyMemberCard component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Updated getStatusIcon function to return IconMap components\n- Converted ✅⏳⚠️👀📋 to IconMap complete/clock/warning/eye/tasks\n- Removed redundant status emoji display\n- Converted streak and role icons to IconMap components"
+        },
+        {
+          "id": 11.24,
+          "title": "Replace emojis in EmptyState",
+          "description": "Replace emoji characters in the EmptyState component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Converted default icons: 👨‍👩‍👧‍👦📋🎯🚀❓ to IconMap family/tasks/target/rocket/info\n- Converted onboarding list emojis to Heroicons\n- Added 'rocket' and 'info' icon types to IconMap"
+        },
+        {
+          "id": 11.25,
+          "title": "Replace emojis in AllowanceSettings",
+          "description": "Replace emoji characters in the AllowanceSettings component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced tab icons with appropriate IconMap components\n- Ensured consistent styling with other tab components\n- Fixed any display issues in settings screens"
+        },
+        {
+          "id": 11.26,
+          "title": "Replace emojis in AdminLayout",
+          "description": "Replace emoji characters in the AdminLayout component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Converted all navigation emojis to Heroicons\n- Fixed the 'user icon' issue mentioned in the update"
+        },
+        {
+          "id": 12.9,
+          "title": "Replace emojis in FamilyStats",
+          "description": "Replace emoji characters in the FamilyStats component with appropriate IconMap components",
+          "details": "- 🏆 (trophy) → IconMap type=\"trophy\" (yellow color for ≥90% completion rate)\n- 🎯 (target) → IconMap type=\"target\" (blue color for ≥70% completion rate and in points card)\n- 💪 (muscle) → IconMap type=\"fire\" (orange color for ≥50% completion rate)\n- 📈 (chart) → IconMap type=\"chart\" (gray color for <50% completion rate)\n- ✅ (checkmark) → IconMap type=\"complete\" (green color in tasks completed card)\n- ⌀ (average symbol) → IconMap type=\"target\" (12px size before \"per task\" text)\n- 🔥 (fire) → IconMap type=\"fire\" (orange color in longest streak card)\n- All icons have appropriate colors and sizes (28px for main icons, 12px for small icons)\n- Fixed the \"weird icons\" issue users were seeing in the stats cards on dashboard",
+          "status": "done",
+          "dependencies": [],
+          "parentTaskId": 11
+        },
+        {
+          "id": 11.27,
+          "title": "Add trophy icon type to IconMap",
+          "description": "Add trophy icon type to IconMap component to support FamilyStats component",
+          "status": "done",
+          "details": "- Added trophy icon type to IconType union\n- Implemented trophy icon mapping in the IconMap component\n- Used for high completion rate indicators in FamilyStats"
+        },
+        {
+          "id": 11.28,
+          "title": "Fix emoji fallbacks in TaskList",
+          "description": "Replace emoji fallbacks in the TaskList component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced 👤 emoji fallback with IconMap user icon (line 483-488)\n- Replaced 👀 emoji with IconMap eye icon (line 495-497)\n- Imported IconMap component\n- Ensures consistent icon display when users don't have avatars"
+        },
+        {
+          "id": 11.29,
+          "title": "Update ApprovalDialog with IconMap components",
+          "description": "Replace remaining emojis in ApprovalDialog with IconMap components and fix PinDialog props",
+          "status": "done",
+          "details": "- Replaced 👤 emoji fallback with IconMap user icon\n- Replaced 🎯 emoji with IconMap target icon in points section\n- Replaced 💰 emoji with IconMap money icon in allowance section\n- Replaced ✅ emoji with IconMap complete icon in Approve button\n- Replaced ❌ emoji with IconMap rejected icon in Reject button\n- Imported IconMap component\n- Fixed PinDialog props (userName instead of title/message)\n- Resolves user-reported \"weird icons\" issue on dashboard"
+        },
+        {
+          "id": 11.31,
+          "title": "Update InitialSetupWizard with IconMap components",
+          "description": "Replace emoji characters in the InitialSetupWizard component with IconMap components",
+          "status": "done",
+          "details": "- Replaced 🏆 emoji with IconMap trophy icon (green color)\n- Replaced 👨‍👩‍👧‍👦 emoji with IconMap family icon (purple color)\n- Changed avatar array from emojis to icon types (child, user, baby, etc.)\n- Changed parent default avatar from '👨‍💼' to 'parent'\n- Ensures consistent icon display during initial setup"
+        },
+        {
+          "id": 11.32,
+          "title": "Add baby icon type to IconMap",
+          "description": "Add baby icon type to IconMap component to support family member avatars",
+          "status": "done",
+          "details": "- Added baby icon type to IconType union\n- Implemented baby icon mapping using FaceSmileIcon from Heroicons\n- Used for young child avatars in family member displays"
+        },
+        {
+          "id": 11.33,
+          "title": "Create getUserAvatarIcon helper function",
+          "description": "Create a utility function to map emoji avatars to IconMap types",
+          "status": "done",
+          "details": "- Created utils.ts with getUserAvatarIcon() function\n- Mapped common emoji avatars to appropriate IconMap types\n- Handled undefined/null avatars with sensible defaults\n- Ensured robust fallback for unknown emoji characters"
+        },
+        {
+          "id": 11.34,
+          "title": "Update FamilyMemberCard with avatar rendering function",
+          "description": "Implement consistent avatar rendering in FamilyMemberCard using the helper function",
+          "status": "done",
+          "details": "- Created renderAvatar() function using getUserAvatarIcon\n- Replaced direct emoji usage with the new function\n- Ensured consistent styling and sizing\n- Fixed the \"weird icons\" issue in family member cards"
+        },
+        {
+          "id": 11.35,
+          "title": "Update Dashboard with avatar rendering function",
+          "description": "Implement consistent avatar rendering in Dashboard using the helper function",
+          "status": "done",
+          "details": "- Created renderAvatar() function using getUserAvatarIcon\n- Replaced direct emoji usage with the new function\n- Fixed the \"weird icons\" issue in dashboard avatars"
+        },
+        {
+          "id": 11.36,
+          "title": "Update UserSwitcher with avatar rendering function",
+          "description": "Replace getAvatarIcon with renderAvatar function using the helper utility",
+          "status": "done",
+          "details": "- Replaced existing getAvatarIcon() with renderAvatar()\n- Used getUserAvatarIcon helper for consistent mapping\n- Fixed emoji fallbacks for parent/child roles\n- Fixed role indicators using IconMap lock/child icons"
+        },
+        {
+          "id": 11.37,
+          "title": "Update PinDialog with IconMap components",
+          "description": "Replace any emoji characters in PinDialog with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced 🔒 emoji with IconMap lock icon\n- Ensured consistent styling with other dialog components\n- Fixed props to use userName instead of title/message"
+        },
+        {
+          "id": 11.38,
+          "title": "Update TimeRangeFilter with IconMap components",
+          "description": "Replace emoji characters in the TimeRangeFilter component with appropriate IconMap components",
+          "status": "done",
+          "details": "- Replaced 📅 emoji with IconMap 'calendar' icon for 'I dag'\n- Replaced 📆 emoji with IconMap 'calendar' icon for 'Denne uken'\n- Replaced 🗓️ emoji with IconMap 'calendar' icon for 'Denne måneden'\n- Replaced 📊 emoji with IconMap 'chart' icon for 'Alt'\n- Added dynamic coloring (white when active, gray when inactive)\n- Improved visual consistency across filter buttons"
+        },
+        {
+          "id": 11.41,
+          "title": "Enhance getUserAvatarIcon function with more emoji mappings",
+          "description": "Expand the getUserAvatarIcon function to handle more human emoji variants",
+          "status": "in-progress",
+          "details": "- Add comprehensive mapping for 25+ human emojis\n- Include professional avatars (teachers, doctors, chefs, etc.)\n- Include more child avatar variants (different hairstyles, etc.)\n- Ensure robust fallback for any unmapped emoji characters\n- Test with all known emoji variants used in the application"
+        },
+        {
+          "id": 11.42,
+          "title": "Update NotificationSystem with IconMap components",
+          "description": "Replace emoji characters in the NotificationSystem component with appropriate IconMap components",
+          "status": "in-progress",
+          "details": "- Replace ✅ emoji with IconMap type=\"complete\" for success notifications\n- Replace ❌ emoji with IconMap type=\"rejected\" for error notifications\n- Replace ⚠️ emoji with IconMap type=\"warning\" for warning notifications\n- Replace ℹ️ emoji with IconMap type=\"info\" for info notifications\n- Replace 📢 emoji with IconMap type=\"notification\" for announcements\n- Add 'notification' icon type to IconMap component\n- Implement getNotificationIcon helper function to return appropriate icon based on notification type\n- Ensure consistent styling with appropriate colors for each notification type"
+        },
+        {
+          "id": 11.43,
+          "title": "Update InitialSetupWizard setup step icons",
+          "description": "Replace setup step emojis in InitialSetupWizard with IconMap components",
+          "status": "in-progress",
+          "details": "- Replace 📋 emoji with IconMap type=\"tasks\" for task setup steps\n- Replace 🏆 emoji with IconMap type=\"trophy\" for reward setup steps\n- Ensure consistent styling with other wizard components\n- Maintain visual hierarchy with appropriate icon sizes and colors"
+        },
+        {
+          "id": 11.39,
+          "title": "Add switch icon to Header component",
+          "description": "Add IconMap 'switch' icon to the user switching functionality in Header",
+          "status": "done",
+          "details": "- Added 'switch' icon type to IconMap component\n- Implemented ArrowsRightLeftIcon for the switch functionality\n- Added visual indicator next to \"Klikk for å bytte\" text\n- Improved user experience with clearer switching indicator"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Redesign Dashboard Layout with Hamburger Sidebar Menu",
+      "description": "Redesign the dashboard layout and navigation to implement a hamburger sidebar menu and card-based grid layout according to the provided design mockup, ensuring responsive design and improved visual aesthetics.",
+      "details": "1. Update the MainLayout component to support the new sidebar design:\n```typescript\n// src/components/layout/MainLayout.tsx\nimport React, { useState } from 'react';\nimport Sidebar from './Sidebar';\nimport Header from './Header';\n\ninterface MainLayoutProps {\n  children: React.ReactNode;\n}\n\nconst MainLayout: React.FC<MainLayoutProps> = ({ children }) => {\n  const [sidebarOpen, setSidebarOpen] = useState(false);\n  \n  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);\n  \n  return (\n    <div className=\"flex h-screen bg-gray-50\">\n      {/* Sidebar */}\n      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />\n      \n      {/* Main Content */}\n      <div className=\"flex flex-col flex-1 overflow-hidden\">\n        <Header onMenuClick={toggleSidebar} />\n        <main className=\"flex-1 overflow-y-auto p-4 md:p-6\">\n          {children}\n        </main>\n      </div>\n    </div>\n  );\n};\n\nexport default MainLayout;\n```\n\n2. Create a new collapsible Sidebar component:\n```typescript\n// src/components/layout/Sidebar.tsx\nimport React, { useEffect } from 'react';\nimport { Link, useLocation } from 'react-router-dom';\nimport { XMarkIcon } from '@heroicons/react/24/outline';\nimport IconMap from '../common/IconMap';\n\ninterface SidebarProps {\n  isOpen: boolean;\n  onClose: () => void;\n}\n\nconst Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {\n  const location = useLocation();\n  \n  // Close sidebar when clicking outside on mobile\n  useEffect(() => {\n    const handleOutsideClick = (e: MouseEvent) => {\n      if (isOpen && e.target instanceof HTMLElement) {\n        const sidebar = document.getElementById('sidebar');\n        if (sidebar && !sidebar.contains(e.target)) {\n          onClose();\n        }\n      }\n    };\n    \n    document.addEventListener('mousedown', handleOutsideClick);\n    return () => document.removeEventListener('mousedown', handleOutsideClick);\n  }, [isOpen, onClose]);\n  \n  // Close sidebar when route changes on mobile\n  useEffect(() => {\n    if (isOpen && window.innerWidth < 768) {\n      onClose();\n    }\n  }, [location, onClose, isOpen]);\n  \n  const navItems = [\n    { name: 'Dashboard', path: '/', icon: 'home' },\n    { name: 'Tasks', path: '/tasks', icon: 'task' },\n    { name: 'Rewards', path: '/rewards', icon: 'reward' },\n    { name: 'Settings', path: '/settings', icon: 'settings' }\n  ];\n  \n  return (\n    <>\n      {/* Overlay */}\n      {isOpen && (\n        <div \n          className=\"fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity md:hidden\"\n          onClick={onClose}\n        />\n      )}\n      \n      {/* Sidebar */}\n      <div \n        id=\"sidebar\"\n        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${\n          isOpen ? 'translate-x-0' : '-translate-x-full'\n        }`}\n      >\n        <div className=\"flex h-full flex-col\">\n          {/* Sidebar Header */}\n          <div className=\"flex items-center justify-between px-4 py-5\">\n            <h2 className=\"text-xl font-bold text-gray-800\">Family Tasks</h2>\n            <button \n              className=\"rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 md:hidden\"\n              onClick={onClose}\n            >\n              <XMarkIcon className=\"h-6 w-6\" />\n            </button>\n          </div>\n          \n          {/* Navigation */}\n          <nav className=\"flex-1 space-y-1 px-2 py-4\">\n            {navItems.map((item) => {\n              const isActive = location.pathname === item.path;\n              return (\n                <Link\n                  key={item.name}\n                  to={item.path}\n                  className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium ${\n                    isActive\n                      ? 'bg-blue-100 text-blue-700'\n                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'\n                  }`}\n                >\n                  <IconMap \n                    icon={item.icon} \n                    className={`mr-3 h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`} \n                  />\n                  {item.name}\n                </Link>\n              );\n            })}\n          </nav>\n        </div>\n      </div>\n    </>\n  );\n};\n\nexport default Sidebar;\n```\n\n3. Update the Header component to include a hamburger menu button:\n```typescript\n// src/components/layout/Header.tsx\nimport React from 'react';\nimport { Bars3Icon, BellIcon } from '@heroicons/react/24/outline';\nimport UserSwitcher from '../user/UserSwitcher';\n\ninterface HeaderProps {\n  onMenuClick: () => void;\n}\n\nconst Header: React.FC<HeaderProps> = ({ onMenuClick }) => {\n  return (\n    <header className=\"bg-white border-b border-gray-200\">\n      <div className=\"px-4 py-3 flex items-center justify-between\">\n        <div className=\"flex items-center\">\n          <button\n            type=\"button\"\n            className=\"text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-1 rounded-md\"\n            onClick={onMenuClick}\n          >\n            <Bars3Icon className=\"h-6 w-6\" />\n          </button>\n        </div>\n        \n        <div className=\"flex items-center space-x-4\">\n          <button className=\"text-gray-500 hover:text-gray-700 focus:outline-none\">\n            <BellIcon className=\"h-6 w-6\" />\n          </button>\n          <UserSwitcher />\n        </div>\n      </div>\n    </header>\n  );\n};\n\nexport default Header;\n```\n\n4. Redesign the Dashboard component to use a grid layout:\n```typescript\n// src/pages/Dashboard.tsx\nimport React from 'react';\nimport { useUsers, useTasks, useTaskCompletions } from '../hooks/dataHooks';\nimport UserCard from '../components/user/UserCard';\n\nconst Dashboard: React.FC = () => {\n  const { users } = useUsers();\n  const { tasks } = useTasks();\n  const { completions, toggleTaskCompletion } = useTaskCompletions();\n  \n  return (\n    <div className=\"container mx-auto\">\n      <h1 className=\"text-2xl font-bold text-gray-800 mb-6\">Family Dashboard</h1>\n      \n      <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\n        {users.map(user => (\n          <UserCard\n            key={user.id}\n            user={user}\n            tasks={tasks.filter(task => task.assignedTo === user.id)}\n            completions={completions.filter(c => c.userId === user.id)}\n            onTaskToggle={toggleTaskCompletion}\n          />\n        ))}\n      </div>\n    </div>\n  );\n};\n\nexport default Dashboard;\n```\n\n5. Create a new UserCard component for the grid layout:\n```typescript\n// src/components/user/UserCard.tsx\nimport React from 'react';\nimport { User, Task, TaskCompletion } from '../../types';\nimport IconMap from '../common/IconMap';\n\ninterface UserCardProps {\n  user: User;\n  tasks: Task[];\n  completions: TaskCompletion[];\n  onTaskToggle: (taskId: string, completed: boolean) => void;\n}\n\nconst UserCard: React.FC<UserCardProps> = ({ user, tasks, completions, onTaskToggle }) => {\n  // Get today's completions\n  const today = new Date().toISOString().split('T')[0];\n  const todayCompletions = completions.filter(c => \n    c.completedAt.startsWith(today)\n  );\n  \n  // Check if task is completed\n  const isTaskCompleted = (taskId: string) => {\n    return todayCompletions.some(c => \n      c.taskId === taskId && (c.status === 'approved' || c.status === 'pending')\n    );\n  };\n  \n  return (\n    <div className=\"bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden\">\n      {/* User Avatar and Name */}\n      <div className=\"flex flex-col items-center pt-6 pb-4\">\n        <div className=\"w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center mb-3\">\n          {user.avatar ? (\n            <img \n              src={user.avatar} \n              alt={user.name} \n              className=\"w-16 h-16 rounded-full object-cover\"\n            />\n          ) : (\n            <span className=\"text-2xl text-white\">{user.name.charAt(0)}</span>\n          )}\n        </div>\n        <h3 className=\"text-lg font-semibold text-gray-800\">{user.name}</h3>\n      </div>\n      \n      {/* Task List */}\n      <div className=\"px-4 pb-5\">\n        <h4 className=\"text-sm font-medium text-gray-500 mb-2\">Today's Tasks</h4>\n        <ul className=\"space-y-2\">\n          {tasks.length > 0 ? (\n            tasks.map(task => (\n              <li key={task.id} className=\"flex items-start\">\n                <div className=\"flex-shrink-0 mt-0.5\">\n                  <input\n                    type=\"checkbox\"\n                    checked={isTaskCompleted(task.id)}\n                    onChange={(e) => onTaskToggle(task.id, e.target.checked)}\n                    className=\"h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500\"\n                  />\n                </div>\n                <span className={`ml-2 text-sm ${\n                  isTaskCompleted(task.id) \n                    ? 'text-gray-500 line-through' \n                    : 'text-gray-700'\n                }`}>\n                  {task.title}\n                </span>\n              </li>\n            ))\n          ) : (\n            <li className=\"text-sm text-gray-500 italic\">No tasks assigned</li>\n          )}\n        </ul>\n      </div>\n    </div>\n  );\n};\n\nexport default UserCard;\n```\n\n6. Add responsive styling for different screen sizes:\n```css\n/* Add to src/index.css or create a new stylesheet */\n@media (max-width: 640px) {\n  .grid {\n    grid-template-columns: repeat(1, minmax(0, 1fr));\n  }\n}\n\n@media (min-width: 641px) and (max-width: 1024px) {\n  .grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n\n@media (min-width: 1025px) {\n  .grid {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n\n@media (min-width: 1280px) {\n  .grid {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n}\n```\n\n7. Add smooth animations for the sidebar:\n```css\n/* Add to src/index.css */\n.sidebar-transition {\n  transition: transform 0.3s ease-in-out;\n}\n\n.sidebar-overlay {\n  transition: opacity 0.3s ease-in-out;\n}\n```\n\n8. Update the main App component to use the new layout:\n```typescript\n// src/App.tsx\nimport React from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\nimport MainLayout from './components/layout/MainLayout';\nimport Dashboard from './pages/Dashboard';\nimport Tasks from './pages/Tasks';\nimport Rewards from './pages/Rewards';\nimport Settings from './pages/Settings';\n\nconst App: React.FC = () => {\n  return (\n    <Router>\n      <MainLayout>\n        <Routes>\n          <Route path=\"/\" element={<Dashboard />} />\n          <Route path=\"/tasks\" element={<Tasks />} />\n          <Route path=\"/rewards\" element={<Rewards />} />\n          <Route path=\"/settings\" element={<Settings />} />\n        </Routes>\n      </MainLayout>\n    </Router>\n  );\n};\n\nexport default App;\n```",
+      "testStrategy": "1. Visual Verification:\n   - Compare the implemented design against the provided mockup to ensure visual consistency\n   - Verify that the user cards display correctly with avatars, names, and task lists\n   - Check that the layout matches the grid design specified in the mockup\n   - Confirm proper spacing, typography, and visual hierarchy\n\n2. Responsive Design Testing:\n   - Test the layout on multiple device sizes (mobile, tablet, desktop)\n   - Verify the grid layout adjusts appropriately:\n     * Mobile: 1 card per row\n     * Tablet: 2 cards per row\n     * Desktop: 3-4 cards per row\n   - Ensure content remains readable and accessible at all breakpoints\n   - Test with browser developer tools using standard device presets\n\n3. Sidebar Navigation Testing:\n   - Verify the hamburger menu button appears in the header\n   - Click the hamburger icon and confirm the sidebar slides out smoothly\n   - Check that clicking outside the sidebar or the X button closes it\n   - Confirm all navigation items are present and functional\n   - Test that the active route is highlighted correctly\n   - Verify the sidebar is fixed on larger screens and slides in/out on mobile\n\n4. Animation Testing:\n   - Verify smooth transitions when opening/closing the sidebar\n   - Check that animations complete in a reasonable time (300ms)\n   - Ensure animations don't interfere with usability or accessibility\n\n5. Functional Testing:\n   - Confirm all existing functionality continues to work with the new design\n   - Test task checkboxes within user cards to ensure they toggle correctly\n   - Verify navigation between different sections of the app works properly\n   - Check that user data and task status display correctly in the new card format\n\n6. Accessibility Testing:\n   - Verify proper contrast ratios for text and interactive elements\n   - Test keyboard navigation through the sidebar menu\n   - Ensure focus states are visible for interactive elements\n   - Check that screen readers can properly announce sidebar state changes\n\n7. Cross-browser Testing:\n   - Test the implementation in Chrome, Firefox, Safari, and Edge\n   - Verify consistent appearance and behavior across browsers\n\n8. Performance Testing:\n   - Check that animations run at 60fps without jank\n   - Verify the page load time is not significantly impacted\n   - Test that the sidebar open/close is responsive and doesn't cause layout shifts",
+      "status": "pending",
+      "dependencies": [
+        3,
+        4,
+        11
+      ],
+      "priority": "high",
+      "subtasks": []
+    }
+  ]
+}

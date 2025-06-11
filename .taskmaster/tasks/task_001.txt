@@ -1,0 +1,71 @@
+# Task ID: 1
+# Title: Project Setup with Vite, React, and Tailwind
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Initialize the project with Vite, React 18, Tailwind CSS, shadcn/ui components, React Router, and Zustand for state management.
+# Details:
+1. Create a new Vite project with React template: `npm create vite@latest familie-todo-app --template react-ts`
+2. Install Tailwind CSS: `npm install -D tailwindcss postcss autoprefixer`
+3. Initialize Tailwind: `npx tailwindcss init -p`
+4. Configure Tailwind in tailwind.config.js to scan React components
+5. Set up shadcn/ui: `npx shadcn-ui@latest init`
+6. Install React Router: `npm install react-router-dom`
+7. Set up basic routing structure with protected routes for admin areas
+8. Install Zustand: `npm install zustand`
+9. Create basic store structure for family, users, tasks
+10. Set up project folder structure:
+```
+src/
+  components/
+    ui/            # shadcn components
+    layout/        # Layout components
+    dashboard/     # Dashboard components
+    tasks/         # Task-related components
+  stores/          # Zustand stores
+  lib/             # Utility functions
+  services/        # Mock data services
+  models/          # TypeScript interfaces
+  pages/           # Route components
+```
+
+# Test Strategy:
+1. Verify all dependencies install correctly
+2. Ensure Vite dev server runs without errors
+3. Confirm hot module replacement works
+4. Test basic routing functionality
+5. Verify Tailwind styles are applied correctly
+6. Test shadcn/ui components render properly
+7. Verify Zustand store initialization
+
+# Subtasks:
+## 1. Initialize Vite Project with React and TypeScript [done]
+### Dependencies: None
+### Description: Create a new Vite project with React and TypeScript template and set up the initial project structure.
+### Details:
+Run `npm create vite@latest familie-todo-app --template react-ts` to create the project. After creation, navigate to the project directory and run `npm install` to install dependencies. Create the folder structure as specified in the task description, including components/, stores/, lib/, services/, models/, and pages/ directories.
+
+## 2. Integrate Tailwind CSS and shadcn/ui Components [done]
+### Dependencies: 1.1
+### Description: Set up Tailwind CSS for styling and integrate shadcn/ui component library.
+### Details:
+Install Tailwind CSS with `npm install -D tailwindcss postcss autoprefixer`. Initialize Tailwind with `npx tailwindcss init -p`. Configure tailwind.config.js to scan React components by adding appropriate paths. Set up shadcn/ui with `npx shadcn-ui@latest init` and follow the prompts to configure it with Tailwind. Add the Tailwind directives to the main CSS file.
+
+## 3. Implement React Router with Protected Routes [done]
+### Dependencies: 1.1
+### Description: Set up routing structure with React Router, including protected routes for admin areas.
+### Details:
+Install React Router with `npm install react-router-dom`. Create a router configuration in a new file (e.g., src/lib/router.tsx). Implement a basic route structure with public routes and protected routes. Create a simple authentication context or store to manage user authentication state. Implement a ProtectedRoute component that redirects unauthenticated users.
+
+## 4. Set Up Zustand State Management [done]
+### Dependencies: 1.1
+### Description: Implement Zustand for state management with stores for family, users, and tasks.
+### Details:
+Install Zustand with `npm install zustand`. Create separate store files in the stores/ directory for different data domains: familyStore.ts, userStore.ts, and taskStore.ts. Define TypeScript interfaces in the models/ directory for each data type. Implement basic CRUD operations in each store. Create a hook-based API for consuming the stores in components.
+
+## 5. Create Mock Data Services [done]
+### Dependencies: 1.4
+### Description: Implement mock data services to simulate backend API calls for development.
+### Details:
+Create service files in the services/ directory that simulate API calls for each data domain (family, users, tasks). Implement methods that return promises to mimic asynchronous API behavior. Add artificial delay to simulate network latency. Connect the services to the Zustand stores so that store actions call the appropriate service methods. Create a mock data file with initial data for development.
+

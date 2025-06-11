@@ -1,0 +1,421 @@
+# Task ID: 12
+# Title: Redesign Dashboard Layout with Hamburger Sidebar Menu
+# Status: pending
+# Dependencies: 3, 4, 11
+# Priority: high
+# Description: Redesign the dashboard layout and navigation to implement a hamburger sidebar menu and card-based grid layout according to the provided design mockup, ensuring responsive design and improved visual aesthetics.
+# Details:
+1. Update the MainLayout component to support the new sidebar design:
+```typescript
+// src/components/layout/MainLayout.tsx
+import React, { useState } from 'react';
+import Sidebar from './Sidebar';
+import Header from './Header';
+
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      
+      {/* Main Content */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Header onMenuClick={toggleSidebar} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default MainLayout;
+```
+
+2. Create a new collapsible Sidebar component:
+```typescript
+// src/components/layout/Sidebar.tsx
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import IconMap from '../common/IconMap';
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const location = useLocation();
+  
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (isOpen && e.target instanceof HTMLElement) {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && !sidebar.contains(e.target)) {
+          onClose();
+        }
+      }
+    };
+    
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isOpen, onClose]);
+  
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    if (isOpen && window.innerWidth < 768) {
+      onClose();
+    }
+  }, [location, onClose, isOpen]);
+  
+  const navItems = [
+    { name: 'Dashboard', path: '/', icon: 'home' },
+    { name: 'Tasks', path: '/tasks', icon: 'task' },
+    { name: 'Rewards', path: '/rewards', icon: 'reward' },
+    { name: 'Settings', path: '/settings', icon: 'settings' }
+  ];
+  
+  return (
+    <>
+      {/* Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity md:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div 
+        id="sidebar"
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex h-full flex-col">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between px-4 py-5">
+            <h2 className="text-xl font-bold text-gray-800">Family Tasks</h2>
+            <button 
+              className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 md:hidden"
+              onClick={onClose}
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
+          </div>
+          
+          {/* Navigation */}
+          <nav className="flex-1 space-y-1 px-2 py-4">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  <IconMap 
+                    icon={item.icon} 
+                    className={`mr-3 h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`} 
+                  />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Sidebar;
+```
+
+3. Update the Header component to include a hamburger menu button:
+```typescript
+// src/components/layout/Header.tsx
+import React from 'react';
+import { Bars3Icon, BellIcon } from '@heroicons/react/24/outline';
+import UserSwitcher from '../user/UserSwitcher';
+
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+  return (
+    <header className="bg-white border-b border-gray-200">
+      <div className="px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center">
+          <button
+            type="button"
+            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-1 rounded-md"
+            onClick={onMenuClick}
+          >
+            <Bars3Icon className="h-6 w-6" />
+          </button>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <button className="text-gray-500 hover:text-gray-700 focus:outline-none">
+            <BellIcon className="h-6 w-6" />
+          </button>
+          <UserSwitcher />
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+```
+
+4. Redesign the Dashboard component to use a grid layout:
+```typescript
+// src/pages/Dashboard.tsx
+import React from 'react';
+import { useUsers, useTasks, useTaskCompletions } from '../hooks/dataHooks';
+import UserCard from '../components/user/UserCard';
+
+const Dashboard: React.FC = () => {
+  const { users } = useUsers();
+  const { tasks } = useTasks();
+  const { completions, toggleTaskCompletion } = useTaskCompletions();
+  
+  return (
+    <div className="container mx-auto">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Family Dashboard</h1>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {users.map(user => (
+          <UserCard
+            key={user.id}
+            user={user}
+            tasks={tasks.filter(task => task.assignedTo === user.id)}
+            completions={completions.filter(c => c.userId === user.id)}
+            onTaskToggle={toggleTaskCompletion}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
+```
+
+5. Create a new UserCard component for the grid layout:
+```typescript
+// src/components/user/UserCard.tsx
+import React from 'react';
+import { User, Task, TaskCompletion } from '../../types';
+import IconMap from '../common/IconMap';
+
+interface UserCardProps {
+  user: User;
+  tasks: Task[];
+  completions: TaskCompletion[];
+  onTaskToggle: (taskId: string, completed: boolean) => void;
+}
+
+const UserCard: React.FC<UserCardProps> = ({ user, tasks, completions, onTaskToggle }) => {
+  // Get today's completions
+  const today = new Date().toISOString().split('T')[0];
+  const todayCompletions = completions.filter(c => 
+    c.completedAt.startsWith(today)
+  );
+  
+  // Check if task is completed
+  const isTaskCompleted = (taskId: string) => {
+    return todayCompletions.some(c => 
+      c.taskId === taskId && (c.status === 'approved' || c.status === 'pending')
+    );
+  };
+  
+  return (
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+      {/* User Avatar and Name */}
+      <div className="flex flex-col items-center pt-6 pb-4">
+        <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center mb-3">
+          {user.avatar ? (
+            <img 
+              src={user.avatar} 
+              alt={user.name} 
+              className="w-16 h-16 rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-2xl text-white">{user.name.charAt(0)}</span>
+          )}
+        </div>
+        <h3 className="text-lg font-semibold text-gray-800">{user.name}</h3>
+      </div>
+      
+      {/* Task List */}
+      <div className="px-4 pb-5">
+        <h4 className="text-sm font-medium text-gray-500 mb-2">Today's Tasks</h4>
+        <ul className="space-y-2">
+          {tasks.length > 0 ? (
+            tasks.map(task => (
+              <li key={task.id} className="flex items-start">
+                <div className="flex-shrink-0 mt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={isTaskCompleted(task.id)}
+                    onChange={(e) => onTaskToggle(task.id, e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                </div>
+                <span className={`ml-2 text-sm ${
+                  isTaskCompleted(task.id) 
+                    ? 'text-gray-500 line-through' 
+                    : 'text-gray-700'
+                }`}>
+                  {task.title}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li className="text-sm text-gray-500 italic">No tasks assigned</li>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default UserCard;
+```
+
+6. Add responsive styling for different screen sizes:
+```css
+/* Add to src/index.css or create a new stylesheet */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1025px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+```
+
+7. Add smooth animations for the sidebar:
+```css
+/* Add to src/index.css */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-overlay {
+  transition: opacity 0.3s ease-in-out;
+}
+```
+
+8. Update the main App component to use the new layout:
+```typescript
+// src/App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import Dashboard from './pages/Dashboard';
+import Tasks from './pages/Tasks';
+import Rewards from './pages/Rewards';
+import Settings from './pages/Settings';
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <MainLayout>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/rewards" element={<Rewards />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </MainLayout>
+    </Router>
+  );
+};
+
+export default App;
+```
+
+# Test Strategy:
+1. Visual Verification:
+   - Compare the implemented design against the provided mockup to ensure visual consistency
+   - Verify that the user cards display correctly with avatars, names, and task lists
+   - Check that the layout matches the grid design specified in the mockup
+   - Confirm proper spacing, typography, and visual hierarchy
+
+2. Responsive Design Testing:
+   - Test the layout on multiple device sizes (mobile, tablet, desktop)
+   - Verify the grid layout adjusts appropriately:
+     * Mobile: 1 card per row
+     * Tablet: 2 cards per row
+     * Desktop: 3-4 cards per row
+   - Ensure content remains readable and accessible at all breakpoints
+   - Test with browser developer tools using standard device presets
+
+3. Sidebar Navigation Testing:
+   - Verify the hamburger menu button appears in the header
+   - Click the hamburger icon and confirm the sidebar slides out smoothly
+   - Check that clicking outside the sidebar or the X button closes it
+   - Confirm all navigation items are present and functional
+   - Test that the active route is highlighted correctly
+   - Verify the sidebar is fixed on larger screens and slides in/out on mobile
+
+4. Animation Testing:
+   - Verify smooth transitions when opening/closing the sidebar
+   - Check that animations complete in a reasonable time (300ms)
+   - Ensure animations don't interfere with usability or accessibility
+
+5. Functional Testing:
+   - Confirm all existing functionality continues to work with the new design
+   - Test task checkboxes within user cards to ensure they toggle correctly
+   - Verify navigation between different sections of the app works properly
+   - Check that user data and task status display correctly in the new card format
+
+6. Accessibility Testing:
+   - Verify proper contrast ratios for text and interactive elements
+   - Test keyboard navigation through the sidebar menu
+   - Ensure focus states are visible for interactive elements
+   - Check that screen readers can properly announce sidebar state changes
+
+7. Cross-browser Testing:
+   - Test the implementation in Chrome, Firefox, Safari, and Edge
+   - Verify consistent appearance and behavior across browsers
+
+8. Performance Testing:
+   - Check that animations run at 60fps without jank
+   - Verify the page load time is not significantly impacted
+   - Test that the sidebar open/close is responsive and doesn't cause layout shifts

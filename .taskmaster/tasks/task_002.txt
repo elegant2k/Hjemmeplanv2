@@ -1,0 +1,85 @@
+# Task ID: 2
+# Title: Implement Data Models and Mock Services
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Define TypeScript interfaces for all data models and create mock data services that simulate backend functionality using localStorage.
+# Details:
+1. Create TypeScript interfaces for all data models as specified in PRD:
+   - Family
+   - User
+   - Task
+   - TaskCompletion
+   - Streak
+   - Reward
+
+2. Implement localStorage service utilities:
+```typescript
+// Example for localStorage utility
+const storagePrefix = 'familie_todo_';
+
+export const storage = {
+  getItem: (key: string) => {
+    return JSON.parse(window.localStorage.getItem(`${storagePrefix}${key}`) || 'null');
+  },
+  setItem: (key: string, value: unknown) => {
+    window.localStorage.setItem(`${storagePrefix}${key}`, JSON.stringify(value));
+  },
+  removeItem: (key: string) => {
+    window.localStorage.removeItem(`${storagePrefix}${key}`);
+  }
+};
+```
+
+3. Create mock data services for each entity:
+   - familyService (CRUD operations for family data)
+   - userService (user management, PIN verification)
+   - taskService (task CRUD, assignment)
+   - completionService (mark as complete, approve/reject)
+   - streakService (calculate and update streaks)
+   - rewardService (manage rewards and progress)
+
+4. Implement data persistence layer with localStorage
+5. Create initial seed data for testing
+6. Add data export/import functionality for backup
+
+# Test Strategy:
+1. Unit test each data model with sample data
+2. Test localStorage persistence across page refreshes
+3. Verify CRUD operations for each service
+4. Test data relationships (e.g., tasks belonging to users)
+5. Verify data integrity constraints
+6. Test import/export functionality
+7. Simulate edge cases (storage full, invalid data)
+
+# Subtasks:
+## 1. Define TypeScript Interfaces for Data Models [done]
+### Dependencies: None
+### Description: Create TypeScript interfaces for all data models as specified in the PRD, ensuring proper type definitions and relationships between models.
+### Details:
+Create a models.ts file that defines interfaces for Family, User, Task, TaskCompletion, Streak, and Reward. Include appropriate types for all properties, define relationships between models (e.g., User belongs to Family), and add JSDoc comments for clarity. Consider using discriminated unions where appropriate and ensure models match the PRD specifications.
+
+## 2. Implement localStorage Service Utilities [done]
+### Dependencies: None
+### Description: Create utility functions for interacting with localStorage, including prefixing, serialization/deserialization, and error handling.
+### Details:
+Implement the storage utility as outlined in the example, but enhance it with error handling for JSON parsing failures, storage quota exceeded errors, and private browsing mode detection. Add methods for batch operations and clearing all app data. Create a separate file for these utilities and export them for use in the data services.
+
+## 3. Create Mock Data Services for Core Entities [done]
+### Dependencies: None
+### Description: Implement mock services for Family and User entities that simulate backend functionality using the localStorage utilities.
+### Details:
+Create familyService.ts and userService.ts files that implement CRUD operations using the storage utilities. Include methods for creating/joining families, user authentication with PIN verification, and user profile management. Implement proper error handling and return types that match what a real API would return, including async/await patterns with Promises.
+
+## 4. Implement Task and Completion Services [done]
+### Dependencies: 2.3
+### Description: Create mock services for Task and TaskCompletion entities with full CRUD functionality and business logic.
+### Details:
+Implement taskService.ts and completionService.ts with methods for creating, reading, updating, and deleting tasks and completions. Include functionality for task assignment, recurring tasks, completion approval/rejection workflows, and filtering tasks by various criteria (assigned user, completion status, date range). Ensure proper validation of task completion rules.
+
+## 5. Develop Streak and Reward Services with Seed Data [done]
+### Dependencies: 2.3, 2.4
+### Description: Implement streak calculation logic, reward management, and create initial seed data for testing the application.
+### Details:
+Create streakService.ts and rewardService.ts with methods to calculate user streaks based on task completions and manage rewards. Implement data export/import functionality for backup purposes. Create a seedData.ts file with initial data for testing that includes sample families, users, tasks, completions, and rewards. Add a method to initialize the app with this seed data on first run.
+

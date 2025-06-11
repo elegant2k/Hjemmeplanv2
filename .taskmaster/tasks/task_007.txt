@@ -1,0 +1,531 @@
+# Task ID: 7
+# Title: Develop Streak and Reward System
+# Status: done
+# Dependencies: 6
+# Priority: medium
+# Description: Implement the streak counting system and configurable rewards based on achievement milestones.
+# Details:
+1. Create streak calculation service:
+```typescript
+const calculateStreak = (completions: TaskCompletion[], taskId: string, userId: string) => {
+  // Sort completions by date
+  const sortedCompletions = completions
+    .filter(c => c.taskId === taskId && c.userId === userId && c.status === 'approved')
+    .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+  
+  // Calculate current streak
+  let currentStreak = 0;
+  let previousDate: Date | null = null;
+  
+  for (const completion of sortedCompletions) {
+    const completionDate = new Date(completion.completedAt);
+    
+    if (!previousDate) {
+      currentStreak = 1;
+      previousDate = completionDate;
+      continue;
+    }
+    
+    // Check if dates are consecutive based on task frequency
+    // Implementation depends on frequency (daily, weekly, etc.)
+    
+    // If streak broken, exit loop
+    if (streakBroken) break;
+    
+    currentStreak++;
+    previousDate = completionDate;
+  }
+  
+  return currentStreak;
+};
+```
+
+2. Implement RewardForm for creating/editing rewards
+3. Create RewardList component to display available rewards
+4. Implement RewardProgress component with visual indicators
+5. Add RewardClaim functionality when milestones are reached
+6. Create streak visualization with flames/badges
+7. Implement streak exceptions for holidays/sickness
+8. Add milestone celebrations (animations/sounds)
+9. Create reward history tracking
+
+# Test Strategy:
+1. Test streak calculation with various completion patterns
+2. Verify streak breaks correctly when tasks are missed
+3. Test reward creation and editing
+4. Verify progress tracking toward rewards
+5. Test reward claiming functionality
+6. Verify streak visualization updates correctly
+7. Test holiday/exception handling
+8. Verify milestone celebrations trigger appropriately
+
+# Subtasks:
+## 1. Implement Streak Calculation Service [done]
+### Dependencies: None
+### Description: Complete the streak calculation service to handle different task frequencies and properly track consecutive completions.
+### Details:
+Extend the existing calculateStreak function to handle different frequency types (daily, weekly, monthly). Implement the streakBroken logic based on the time difference between completions relative to the task frequency. Add functions to reset streaks when appropriate and handle edge cases like timezone differences. Create utility functions for date comparisons that respect the frequency type.
+<info added on 2025-06-10T18:22:54.041Z>
+## Analysis of Current Implementation
+
+The StreakService is already quite well implemented with the following features:
+- Complete CRUD operations for streaks
+- Frequency-aware streak calculation (daily, weekly, monthly, once)
+- Grace periods for different frequencies (1-5 days depending on type)
+- Error handling with custom StreakServiceError
+- Statistics calculation (active streaks, longest streak, averages)
+- Integration with completionService for approved completions
+
+### Current Issues Identified:
+
+1. **Missing Automatic Streak Updates**: CompletionService approveCompletion() has a comment about updating streaks externally to avoid circular dependency, but no integration exists.
+
+2. **Missing Integration Points**: Streak updates are not triggered when tasks are approved.
+
+3. **No Holiday/Exception Handling**: The service lacks special date handling for holidays/sick days.
+
+4. **Missing Scheduled Updates**: No daily job to check and update streak status.
+
+### Areas that need completion:
+
+1. Create hook for automatic streak updates after task approval
+2. Add holiday exception handling
+3. Implement streak status checking (daily job simulation)
+4. Better integration with UI components
+</info added on 2025-06-10T18:22:54.041Z>
+<info added on 2025-06-10T18:27:35.972Z>
+## Implementation Progress Update
+
+### Completed Enhancements:
+
+1. **Automatic Streak Updates Integration**: 
+   - Added `approveCompletionWithStreakUpdate()` method to CompletionService
+   - Uses dynamic import to avoid circular dependency
+   - Automatically updates streaks when tasks are approved
+
+2. **Holiday/Exception Handling**:
+   - Added `HolidayException` interface and related methods
+   - `addHolidayException()`, `getHolidayExceptions()`, `removeHolidayException()`
+   - Enhanced `isConsecutiveByFrequencyWithHolidays()` with grace period extensions
+   - Updated `calculateStreak()` to use holiday-aware logic
+
+3. **Daily Streak Maintenance**:
+   - Added `performDailyStreakCheck()` for simulated scheduled job
+   - Automatically deactivates expired streaks
+   - Returns summary of updated/deactivated streaks
+
+4. **Enhanced User Experience**:
+   - Added `getUserStreakSummary()` for comprehensive user streak data
+   - Created `useStreaks()` hook for React components
+   - Better error handling and logging
+
+5. **Code Quality Improvements**:
+   - Fixed TypeScript compilation errors
+   - Removed unused imports and variables
+   - Updated seedData.ts to properly call streak functions
+   - Enhanced type safety
+
+### Current Status:
+The streak calculation service is now feature-complete with:
+- ✅ Frequency-aware calculations (daily, weekly, monthly)
+- ✅ Holiday exception handling
+- ✅ Automatic integration with task approval
+- ✅ Daily maintenance simulation
+- ✅ Comprehensive user summaries
+- ✅ React hooks for UI integration
+
+### Next Steps:
+Ready to move to subtask 7.2 (Reward Configuration Components) as the core streak calculation service is now complete and fully integrated.
+</info added on 2025-06-10T18:27:35.972Z>
+
+## 2. Create Reward Configuration Components [done]
+### Dependencies: None
+### Description: Develop the UI components for creating, editing, and displaying rewards.
+### Details:
+Implement RewardForm component with fields for name, description, required streak/milestone, reward type (badge, points, etc.), and visual assets. Create RewardList component to display available rewards in a grid or list format with filtering options. Include reward editing and deletion functionality. Ensure proper validation of reward configuration data.
+<info added on 2025-06-10T18:34:41.859Z>
+## Completed Implementation: Reward Configuration Components
+
+### Created Components:
+
+1. **RewardForm Component (`src/components/RewardForm.tsx`)**:
+   - Comprehensive form for creating and editing rewards
+   - Live preview of reward with category icons and cost display
+   - Support for all reward categories (privilege, item, activity, allowance)
+   - Points and allowance cost configuration
+   - Active/inactive status toggle
+   - Form validation and error handling
+   - Can be used standalone or in dialog mode
+
+2. **RewardCard Component (`src/components/RewardCard.tsx`)**:
+   - Display individual rewards with visual indicators
+   - Category-based icons and color coding
+   - Cost display (points + allowance)
+   - Affordability checking for children (shows if they can afford it)
+   - Parent actions: Edit, Toggle Active/Inactive, Delete
+   - Child actions: Redeem reward (if affordable)
+   - Compact and full display modes
+   - Active/inactive status indicators
+
+3. **RewardList Component (`src/components/RewardList.tsx`)**:
+   - Grid display of multiple rewards
+   - Filtering options: All, Available, Affordable (for children)
+   - Sorting: Newest, Cost (low/high), Category
+   - User progress display for children (available points/allowance)
+   - Automatic refresh after reward operations
+   - Empty states with appropriate messaging
+   - Integration with RewardCard for display
+
+4. **RewardDialog Component (`src/components/RewardDialog.tsx`)**:
+   - Modal dialog wrapper for RewardForm
+   - Handles create/edit workflows
+   - Clean modal interface with backdrop
+   - Success callbacks and dialog management
+
+5. **Updated RewardsPage (`src/pages/RewardsPage.tsx`)**:
+   - Complete integration of all reward components
+   - Parent/child role-based functionality
+   - Dialog management for create/edit operations
+
+### Features Implemented:
+- ✅ Full CRUD operations for rewards
+- ✅ Category-based organization with icons
+- ✅ Cost configuration (points + allowance)
+- ✅ User progress tracking and affordability checking
+- ✅ Filter and sort functionality
+- ✅ Role-based UI (parent vs child views)
+- ✅ Reward redemption system
+- ✅ Visual feedback and status indicators
+- ✅ Responsive design
+- ✅ Form validation and error handling
+
+### Integration Points:
+- Uses existing `rewardService` for all backend operations
+- Integrates with `useUser` context for role and family management
+- Compatible with existing UI component system
+- Uses standard Card, Button components from UI library
+</info added on 2025-06-10T18:34:41.859Z>
+
+## 3. Implement Streak Tracking and Storage [done]
+### Dependencies: 7.1
+### Description: Create the backend services and database schema for storing and updating user streaks.
+### Details:
+Design and implement database schema for storing user streaks with fields for userId, taskId, currentStreak, longestStreak, lastCompletionDate, and streakHistory. Create API endpoints for retrieving, updating, and resetting streaks. Implement a scheduled job to check and update streaks daily. Add streak exception handling for configurable special dates (holidays, sick days).
+<info added on 2025-06-10T18:43:24.331Z>
+## Completed Implementation: Streak Tracking and Storage
+
+### Created Components and Services:
+
+1. **StreakDisplay Component (`src/components/StreakDisplay.tsx`)**:
+   - Comprehensive streak visualization with multiple display modes
+   - Shows individual task streaks with icons, colors, and activity status
+   - Compact and full view modes for different contexts
+   - User streak summary with total active streaks and longest streak
+   - Motivational messages based on streak performance
+   - Integration with useStreaks hook for real-time data
+   - Color-coded streak levels (0=⭕, 1-2=🔥, 3-6=🚀, 7-13=⭐, 14-29=🏆, 30+=👑)
+
+2. **StreakSettings Component (`src/components/StreakSettings.tsx`)**:
+   - Parent-only interface for managing streak system configuration
+   - Holiday exception management (add/remove special dates)
+   - Daily streak check functionality with status reporting
+   - System information about grace periods for different frequencies
+   - Form validation and error handling
+   - Integration with useStreaks hook for holiday management
+
+3. **StreaksPage (`src/pages/StreaksPage.tsx`)**:
+   - Dedicated page for comprehensive streak management
+   - Tab-based interface (Overview / Settings)
+   - User selection for parents to view family member streaks
+   - Family overview with individual streak displays
+   - Educational tips for building streaks
+   - Role-based functionality (parent vs child views)
+
+4. **StreakStorage Service (`src/services/streakStorage.ts`)**:
+   - Enhanced storage layer with data integrity features
+   - Streak history tracking with automatic change detection
+   - Batch operations for performance optimization
+   - Metadata management (last check dates, totals, milestones)
+   - Data validation and cleanup operations
+   - Export/import functionality for backups
+   - Separate storage keys for different data types
+   - Storage limit management (max 1000 history entries)
+
+5. **StreakProgressBar Component (`src/components/StreakProgressBar.tsx`)**:
+   - Visual progress bar for streak milestones
+   - Dynamic colors based on progress and activity
+   - Multiple size options (sm/md/lg)
+   - Milestone markers and completion indicators
+   - Status indicators for active/inactive streaks
+   - Percentage and progress display
+
+### Data Storage Architecture:
+
+**Storage Keys:**
+- `streaks`: Core streak data
+- `streak_holidays`: Holiday exceptions
+- `streak_history`: Historical change tracking
+- `streak_metadata`: Family-level metadata
+
+**Data Types:**
+- `StreakHistory`: Track streak changes with timestamps
+- `StreakMetadata`: Family analytics and check dates
+- Enhanced holiday exception tracking
+
+### Key Features Implemented:
+
+- ✅ **Enhanced Storage Layer**: Dedicated storage service with integrity checks
+- ✅ **History Tracking**: Automatic tracking of streak changes and milestones
+- ✅ **Holiday Management**: UI for managing holiday exceptions
+- ✅ **Data Integrity**: Validation and cleanup operations
+- ✅ **Visual Components**: Multiple display modes for different contexts
+- ✅ **Batch Operations**: Performance-optimized storage operations
+- ✅ **Metadata Tracking**: Family-level analytics and statistics
+- ✅ **Export Functionality**: Backup and restore capabilities
+- ✅ **Role-based Access**: Parent controls for sensitive operations
+- ✅ **Motivational Elements**: Encouraging messages and visual feedback
+
+### Integration Points:
+
+- Uses existing `useStreaks` hook for data management
+- Compatible with existing `streakService` for calculations
+- Integrates with `useUser` context for role-based functionality
+- Uses localStorage through enhanced storage layer
+- Compatible with existing Card/Button UI components
+
+### Storage Improvements:
+
+- Automatic history tracking for streak changes
+- Batch operations to reduce storage calls
+- Data integrity validation and cleanup
+- Metadata tracking for analytics
+- Storage optimization (size limits, cleanup)
+- Backup/restore functionality for data safety
+</info added on 2025-06-10T18:43:24.331Z>
+
+## 4. Develop Reward Progress Visualization [done]
+### Dependencies: 7.2, 7.3
+### Description: Create visual components to display streak progress and reward milestones.
+### Details:
+Implement RewardProgress component with progress bars or circular indicators showing current streak relative to reward thresholds. Create streak visualization with animated flame icons or badges that grow with streak length. Add tooltips showing detailed streak information. Implement responsive design for different screen sizes. Create animations for streak increments.
+<info added on 2025-06-10T18:49:13.525Z>
+## Completed Implementation: Reward Progress Visualization
+
+### Created Comprehensive Visualization Components:
+
+1. **RewardProgressBar Component (`src/components/RewardProgressBar.tsx`)**:
+   - Visual progress bars for both points and allowance toward rewards
+   - Color-coded progress levels (gray < 25%, orange < 50%, yellow < 75%, blue < 100%, green = complete)
+   - Multiple size variants (sm, md, lg) for different contexts
+   - Configurable labels and amount displays
+   - Norwegian language support with proper currency formatting
+   - Gradient overlays for enhanced visual appeal
+   - Real-time progress calculation with percentage display
+
+2. **RewardMilestoneCard Component (`src/components/RewardMilestoneCard.tsx`)**:
+   - Individual reward display cards with progress visualization
+   - Category-based styling and icons (privilege 👑, item 🎁, activity 🎮, allowance 💰)
+   - Affordability checking for both points and allowance requirements
+   - Interactive redemption functionality for children
+   - Status indicators (can redeem, insufficient funds, inactive)
+   - Progress bars integrated for each cost type
+   - Current balance display for user reference
+   - Hover effects and responsive design
+
+3. **StreakMilestoneCard Component (`src/components/StreakMilestoneCard.tsx`)**:
+   - Streak milestone visualization with achievement tracking
+   - Five-tier milestone system (Starter 🌱, Consistent 🔥, Dedicated ⭐, Champion 🏆, Legend 👑)
+   - Color-coded tiers (bronze, silver, gold, platinum, diamond)
+   - Achievement celebration functionality with visual feedback
+   - Progress tracking toward each milestone
+   - Reward points display for completed milestones
+   - Achievement dates and celebration replay options
+   - Active/inactive streak state handling
+
+4. **ProgressDashboard Component (`src/components/ProgressDashboard.tsx`)**:
+   - Comprehensive dashboard combining all progress visualization
+   - User selection and progress overview with quick stats
+   - Tabbed interface (Rewards vs Streak Milestones)
+   - "Nearly Affordable" rewards section highlighting achievable goals
+   - Complete rewards listing with affordability filters
+   - Streak milestone grid with achievement status
+   - User progress summary with key metrics
+   - Real-time data integration with services
+   - Role-based functionality (parent vs child views)
+   - Responsive grid layouts for different screen sizes
+
+5. **Enhanced UserService (`src/services/userService.ts`)**:
+   - Added `getUserProgress()` method for comprehensive user statistics
+   - Returns points, allowance, completed tasks, active streaks, and longest streak
+   - Mock implementation with realistic random data for development
+   - Proper error handling and TypeScript typing
+
+### Key Features Implemented:
+
+#### Visual Progress System:
+- ✅ Real-time progress bars for reward goals
+- ✅ Color-coded progress levels for immediate feedback
+- ✅ Percentage completion displays
+- ✅ Multiple size variants for different UI contexts
+
+#### Reward Milestone Tracking:
+- ✅ Individual reward cards with progress visualization
+- ✅ Affordability checking for both points and allowance
+- ✅ Category-based visual styling and organization
+- ✅ Interactive redemption system with user feedback
+- ✅ "Nearly affordable" highlighting to motivate users
+
+#### Streak Achievement System:
+- ✅ Five-tier milestone progression system
+- ✅ Visual achievement indicators and celebration
+- ✅ Progress tracking toward each milestone
+- ✅ Reward points attribution for completions
+- ✅ Achievement history and replay functionality
+
+#### Dashboard Integration:
+- ✅ Unified progress overview with key statistics
+- ✅ Tabbed organization for rewards vs streaks
+- ✅ Real-time data loading and display
+- ✅ Responsive design for all device sizes
+- ✅ Empty states and loading indicators
+
+#### User Experience Enhancements:
+- ✅ Norwegian language support throughout
+- ✅ Consistent visual design with Tailwind CSS
+- ✅ Smooth animations and transitions
+- ✅ Proper error handling and user feedback
+- ✅ Role-based functionality and permissions
+</info added on 2025-06-10T18:49:13.525Z>
+
+## 5. Implement Reward Claiming and Celebration System [done]
+### Dependencies: 7.3, 7.4
+### Description: Create the functionality for users to claim rewards when milestones are reached and celebrate achievements.
+### Details:
+Implement RewardClaim component and associated backend logic to verify eligibility and mark rewards as claimed. Create reward history tracking to store claimed rewards with timestamps. Implement milestone celebrations with configurable animations, sounds, and notifications. Add a reward history view for users to see past achievements. Create notification system to alert users when new rewards are available to claim.
+<info added on 2025-06-10T18:58:26.141Z>
+## SUBTASK 7.5 IMPLEMENTATION COMPLETED
+
+### Overview
+Successfully implemented the complete reward claiming and celebration system with comprehensive functionality for handling achievements, reward claims, and celebrations.
+
+### 🎯 Implemented Components and Features
+
+#### 1. **CelebrationModal.tsx** - Animated Celebration Modal
+- **Dynamic celebration types**: reward, streak, milestone, achievement
+- **Visual variety**: Custom color gradients and animations for each type
+- **Confetti effects**: Animated particles with randomized positioning
+- **Motivational messaging**: Norwegian language celebration messages
+- **Auto-close functionality**: Configurable timing with progress indicator
+- **Interactive features**: Share functionality and manual close
+- **Responsive design**: Scales properly on different screen sizes
+
+#### 2. **RewardClaimingService.ts** - Core Business Logic Service
+- **Comprehensive reward claiming**: Full validation and transaction handling
+- **Achievement tracking**: Automatic achievement recording for various milestones  
+- **Streak milestone detection**: 5-tier milestone system (Starter→Konsistent→Dedikert→Mester→Legende)
+- **Celebration queue management**: Automatic celebration scheduling and queueing
+- **Data persistence**: LocalStorage integration with structured data models
+- **Error handling**: Custom error types with specific error codes
+- **Redemption codes**: Unique code generation for claimed rewards
+- **Expiration handling**: Automatic expiration for privilege-type rewards
+
+#### 3. **useCelebrations.ts** - React Hook for State Management
+- **Real-time data loading**: Automatic fetching of celebrations, achievements, and claimed rewards
+- **Auto-refresh functionality**: 30-second intervals for new celebration detection
+- **Error state management**: Comprehensive error handling with user feedback
+- **Reward claiming integration**: Seamless reward claiming with UI updates
+- **Milestone checking**: Automated streak milestone detection
+- **Data refresh capabilities**: Manual and automatic data synchronization
+
+#### 4. **CelebrationManager.tsx** - Global Celebration Orchestrator
+- **Automatic celebration triggering**: Queue-based celebration display system
+- **Milestone monitoring**: Periodic streak milestone checking (5-minute intervals)
+- **Global access**: Window-exposed trigger function for other components
+- **Queue visualization**: Development-mode queue indicator for debugging
+- **Sequential celebrations**: Proper timing between multiple celebrations
+- **Error resilience**: Graceful error handling for celebration failures
+
+#### 5. **RewardClaimButton.tsx** - Interactive Reward Claiming UI
+- **Affordability checking**: Real-time validation of user points and allowance
+- **Visual feedback states**: Loading, affordable, and insufficient funds states
+- **Progress integration**: Live user progress data loading
+- **Error handling**: User-friendly error messages and callbacks
+- **Responsive design**: Hover effects and visual state transitions
+- **Tooltip information**: Detailed affordability information on hover
+
+#### 6. **AchievementsList.tsx** - Achievement and Rewards Display
+- **Tabbed interface**: Separate views for achievements and claimed rewards
+- **Achievement categorization**: Color-coded badges for different achievement types
+- **Reward status tracking**: Visual indicators for claimed/redeemed/expired status
+- **Redemption codes**: Secure display of reward redemption codes
+- **Expiration warnings**: Clear indicators for time-sensitive rewards
+- **Norwegian localization**: Full Norwegian language support with proper date formatting
+
+### 🏗️ Technical Architecture
+
+#### Data Models
+- **ClaimedReward**: Complete reward transaction tracking
+- **Achievement**: Structured achievement system with metadata
+- **CelebrationEvent**: Queue-based celebration event system
+
+#### Service Integration
+- **Reward Service**: Integration with existing reward management
+- **User Service**: Progress tracking and user data synchronization
+- **Streak Service**: Milestone detection and streak tracking
+- **Storage**: Persistent data management with localStorage
+
+#### Error Handling
+- **Custom error types**: RewardClaimingServiceError with specific codes
+- **Graceful degradation**: Fallback UI states for error conditions
+- **User feedback**: Clear error messages in Norwegian
+
+### 🎨 User Experience Features
+
+#### Celebration System
+- **Multi-tier visual effects**: Different animations for different achievement levels
+- **Norwegian messaging**: Culturally appropriate celebration language
+- **Share functionality**: Native web share API integration
+- **Auto-progression**: Queue-based celebration display with timing control
+
+#### Reward Claiming
+- **Real-time affordability**: Live calculation of claiming ability
+- **Visual progress feedback**: Progress bars and status indicators
+- **Confirmation system**: Clear confirmation of successful claims
+- **Redemption tracking**: Code generation and expiration management
+
+#### Achievement Tracking
+- **5-tier streak milestones**: Progressively rewarding streak system
+- **Point rewards**: Bonus points for milestone achievements
+- **Visual achievement badges**: Color-coded achievement categories
+- **History tracking**: Complete achievement and reward history
+
+### 🔧 Integration Points
+
+#### Service Registry Updates
+- **Export additions**: Added rewardClaimingService and related types to services/index.ts
+- **Type exports**: Comprehensive TypeScript interface exports
+- **Component access**: Global component accessibility for integrated use
+
+#### Hook Integration
+- **UserContext integration**: Seamless user state management
+- **Real-time updates**: Automatic data refresh on user changes
+- **Error state management**: Consistent error handling across components
+
+### 🧪 Key Success Factors
+
+#### Error Prevention
+- **Validation layers**: Multiple validation points for reward claims
+- **Data integrity**: Comprehensive data validation and error recovery
+- **Type safety**: Full TypeScript coverage with proper interface definitions
+
+#### Performance Optimization  
+- **Lazy loading**: Components only load data when needed
+- **Debounced updates**: Efficient data refresh strategies
+- **Memory management**: Proper cleanup of intervals and subscriptions
+
+#### User Experience
+- **Immediate feedback**: Real-time UI updates for all interactions
+- **Progressive enhancement**: Features work independently and enhance each other
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
+</info added on 2025-06-10T18:58:26.141Z>
+

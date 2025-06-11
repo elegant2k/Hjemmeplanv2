@@ -1,0 +1,426 @@
+# Overview
+
+Familie Todo App er en web-basert applikasjon som motiverer familier til å holde oversikt over daglige oppgaver gjennom streaks, belønninger og familieengasjement. Appen løser problemet med at barn glemmer eller mangler motivasjon for hverdagsoppgaver, samtidig som den gir foreldre bedre oversikt og kontroll.
+
+**Målgruppe:** Familier med barn (5-16 år) som ønsker struktur og motivasjon i hverdagen.
+
+**Verdiproposisjon:** Transformerer kjedelige hverdagsoppgaver til et motiverende spill med streaks, belønninger og familieaktiviteter, samtidig som foreldre får oversikt og kontroll.
+
+# Core Features
+
+## 1. Dashboard & Familieoversikt
+**Hva:** Hovedskjerm som viser alle familiemedlemmers oppgaver og status for dagen/uken.
+**Hvorfor:** Gir rask oversikt over hvem som mangler hvilke oppgaver og familiens samlede progresjon.
+**Hvordan:** Kortoversikt per person med color-coded status, dagens tall, og rask tilgang til alle hovedfunksjoner.
+
+## 2. Oppgavehåndtering
+**Hva:** Opprett, tildel og administrer oppgaver med ulike frekvenser og belønninger.
+**Hvorfor:** Kjernen i systemet - strukturerer familiens daglige rutiner og forventninger.
+**Hvordan:** CRUD-operasjoner for oppgaver med metadata (tildelt til, frekvens, poeng, lommepenger), samt godkjenningsworkflow.
+
+## 3. Streak & Belønningssystem
+**Hva:** Teller på rad-dager for oppgaver og definerte belønninger basert på måloppnåelse.
+**Hvorfor:** Motiverer barn til å opprettholde gode vaner over tid.
+**Hvordan:** Automatisk streak-telling med visuelle indikatorer, konfigurerbare belønninger med progresjonsstatus.
+
+## 4. Familieaktiviteter & Poeng
+**Hva:** Felles familieoppgaver som gir poeng mot familiebelønninger.
+**Hvorfor:** Skaper teamfølelse og motiverer til samarbeid utover individuelle oppgaver.
+**Hvordan:** Familiepoeng-system med visuell progresjonsstolpe mot felles mål/belønninger.
+
+## 5. Lommepenge-system
+**Hva:** Koble kronebeløp til oppgaver og automatisk beregne ukepenger basert på fullførte oppgaver.
+**Hvorfor:** Mange familier ønsker å koble husarbeid til økonomisk læring for barn.
+**Hvordan:** Konfigurerbare beløp per oppgave, automatisk ukentlig oppsummering, utbetalingssporing.
+
+## 6. Administrasjon & Familieoppset
+**Hva:** Foreldre kan administrere familiemedlemmer, oppgaver, belønninger og innstillinger.
+**Hvorfor:** Gir foreldre kontroll og fleksibilitet til å tilpasse systemet til familiens behov.
+**Hvordan:** Admin-panel med PIN-beskyttelse, brukeradministrasjon, og systemkonfigurasjon.
+
+## 7. Godkjenningsworkflow
+**Hva:** Barn markerer oppgaver som fullført, foreldre godkjenner med PIN-kode.
+**Hvorfor:** Sikrer kvalitet og gir foreldre kontroll over hva som regnes som fullført.
+**Hvordan:** To-trinns prosess med visuell feedback og notifikasjoner for ventende godkjenninger.
+
+# User Experience
+
+## User Personas
+
+### Foreldre (Admin)
+- **Behov:** Oversikt, kontroll, motivere barn, redusere mas
+- **Frustrasjoner:** Glemsk barn, gjentakende påminnelser, manglende struktur
+- **Mål:** Automatisere belønninger, få barn til å ta ansvar
+
+### Barn (8-12 år)
+- **Behov:** Tydelige forventninger, umiddelbar feedback, motivasjon
+- **Frustrasjoner:** Kjedelige oppgaver, uklare regler, sen belønning
+- **Mål:** Oppnå belønninger, konkurrere med søsken, få anerkjennelse
+
+### Ungdom (13-16 år)
+- **Behov:** Autonomi, økonomisk incentiv, fleksibilitet
+- **Frustrasjoner:** Barnaktige systemer, rigide regler, lav belønning
+- **Mål:** Tjene lommepenger, opprettholde frihet, unngå konflikter
+
+## Key User Flows
+
+### Morgenrutine (Barn)
+1. Logg inn på familiekonto
+2. Se dagens oppgaver på dashboard
+3. Marker oppgaver som fullført etter utførelse
+4. Se streak-progresjon og belønningsstatus
+5. Sjekk familiepoeng og felles mål
+
+### Kveldsoversikt (Foreldre)
+1. Logg inn med PIN-kode
+2. Se oversikt over ventende godkjenninger
+3. Godkjenn/avvis fullførte oppgaver
+4. Sjekk ukens progresjon og lommepenger
+5. Juster oppgaver for neste dag/uke
+
+### Ukentlig Planlegging (Foreldre)
+1. Gå til administrasjonspanel
+2. Vurder kommende ukes behov
+3. Opprett nye oppgaver eller juster eksisterende
+4. Sett ferieperioder eller spesielle unntak
+5. Oppdater belønninger og lommepenge-rater
+
+## UI/UX Considerations
+
+- **Web-first design** - optimalisert for desktop/laptop bruk
+- **Color-coded status** - grønn (fullført), gul (venter godkjenning), rød (ikke gjort)
+- **Visuell progresjon** - progress bars, flames for streaks, stjerner for belønninger
+- **Minimal kognitiv last** - store knapper, tydelig hierarki, enkle handlinger
+- **Motiverende feedback** - celebrasjoner ved fullføring, streak-milestones
+- **Accessibility** - keyboard navigation, screen reader support, god kontrast
+
+## Design System & Layout
+
+### Dashboard Layout Concept
+**Card-based familiemedlem layout:**
+- **Top section:** Personlig info (navn, avatar, streak-status "X av Y")
+- **Bottom section:** Dagens oppgaver som checkbox-liste med visual completion status
+- **Grid layout:** 2-4 familiemedlemmer side-ved-side på desktop
+- **Visual hierarchy:** Navn prominent, streak-info som sekundær badge, oppgaver som actionable liste
+
+### Design Principles
+- **Card-based interface** - hver person som eget kort/område
+- **Consistent spacing** - lik størrelse på kort, forutsigbar layout
+- **Clear interaction patterns** - checkboxer for oppgaver, progress indicators for streaks
+- **Family-centric view** - se alle på én gang, sammenlign enkelt
+- **Status-driven design** - farger og ikoner kommuniserer status umiddelbart
+
+### Component Hierarchy
+```
+Dashboard
+├── FamilyMemberCard (repeated)
+│   ├── MemberHeader (navn, avatar, streak-badge)
+│   └── TaskList (checkbox items med status)
+├── FamilyStats (øverst eller sidebar)
+└── QuickActions (floating eller bottom bar)
+```
+
+# Technical Architecture
+
+## System Components
+
+### Frontend
+- **React 18** - Komponentbasert UI med hooks
+- **Vite** - Rask development server og build tool
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Tilgjengelige, ferdige komponenter
+- **React Router** - Client-side routing
+- **Zustand** - Lightweight state management
+
+### Data Layer (Phase 1)
+- **localStorage** - Browser-basert datapersistering
+- **JSON struktur** - Enkle objekter for rapid prototyping
+- **Mock data services** - Simulerer backend API-er
+
+### Future Backend (Phase 2)
+- **Next.js API Routes** - Fullstack React with API endpoints
+- **Supabase** - Managed PostgreSQL + real-time + auth
+- **JWT Authentication** - Secure family/user sessions
+
+## Data Models
+
+```javascript
+// Familie
+Family {
+  id: string
+  name: string
+  memberCount: number
+  createdBy: string
+  createdAt: Date
+}
+
+// Brukere
+User {
+  id: string
+  familyId: string
+  name: string
+  role: 'parent' | 'child'
+  age?: number
+  pin?: string (kun foreldre)
+  allowanceEnabled: boolean
+}
+
+// Oppgaver
+Task {
+  id: string
+  familyId: string
+  title: string
+  description?: string
+  assignedTo: string
+  frequency: 'daily' | 'weekly' | 'monthly' | 'once'
+  points: number
+  allowanceAmount?: number
+  isActive: boolean
+  createdBy: string
+}
+
+// Oppgavefullføringer
+TaskCompletion {
+  id: string
+  taskId: string
+  userId: string
+  completedAt: Date
+  approvedBy?: string
+  approvedAt?: Date
+  status: 'pending' | 'approved' | 'rejected'
+}
+
+// Streaks
+Streak {
+  id: string
+  userId: string
+  taskId: string
+  currentStreak: number
+  longestStreak: number
+  lastCompletedDate: Date
+}
+
+// Belønninger
+Reward {
+  id: string
+  familyId: string
+  title: string
+  description?: string
+  requiredDays: number
+  assignedTo?: string
+  isActive: boolean
+}
+```
+
+## APIs and Integrations
+
+### Phase 1 (Mock APIs)
+```javascript
+// Local storage wrappers
+familyService.getFamilyData()
+taskService.getTasks(familyId)
+userService.getUsers(familyId)
+streakService.getStreaks(userId)
+```
+
+### Phase 2 (Real APIs)
+```javascript
+// REST endpoints
+GET /api/families/:id
+GET /api/tasks?familyId=:id
+POST /api/tasks/:id/complete
+PUT /api/tasks/:id/approve
+GET /api/streaks/:userId
+POST /api/rewards
+```
+
+## Infrastructure Requirements
+
+### Phase 1
+- **Static hosting** (Vercel/Netlify)
+- **CDN** for asset delivery
+- **HTTPS** certificate
+
+### Phase 2
+- **Database** (Supabase managed PostgreSQL)
+- **Real-time subscriptions** for family sync
+- **File storage** for avatars/images
+- **Backup system** for family data
+
+# Development Roadmap
+
+## Phase 1: Frontend MVP (4-6 uker)
+
+### Scope
+Fullstendig fungerende frontend med all kjernelogikk implementert ved hjelp av mock data og localStorage. Kan brukes av ekte familier for validering av konsept og brukeropplevelse.
+
+### Deliverables
+- Fungerende dashboard med familieoversikt
+- Komplett oppgave-CRUD med godkjenningsworkflow
+- Streak-system med visuell feedback
+- Belønningssystem med progresjonssporing
+- Lommepenge-kalkulering og oversikt
+- Admin-panel for familieadministrasjon
+- Responsive design for web
+- Data backup/restore via JSON-eksport
+
+## Phase 2: Backend Integration (3-4 uker)
+
+### Scope
+Erstatte mock data med ekte backend, legge til brukerautentisering, og real-time synkronisering mellom familiemedlemmer.
+
+### Deliverables
+- Supabase database setup med migrasjoner
+- Brukerautentisering og familieregistrering
+- Real-time updates når oppgaver fullføres/godkjennes
+- Cloud backup av familiedata
+- Performance optimalisering
+- API dokumentasjon
+
+## Phase 3: Premium Features (Kontinuerlig)
+
+### Scope
+Avanserte features basert på brukerfeedback og markedsbehov.
+
+### Deliverables
+- Detaljert analytics og rapportering
+- Kalenderintegrasjon (Google/Apple)
+- Push-notifikasjoner
+- Mobilapp (React Native)
+- Flerfamilie-administrasjon
+- Marketplace for belønningsideer
+
+# Logical Dependency Chain
+
+## Foundation Layer (Bygges først)
+1. **Prosjektoppsett** - Vite + React + Tailwind + shadcn/ui konfigurert
+2. **Mock data struktur** - Definere og implementere datamodeller
+3. **Basic routing** - React Router oppsett med hovedsider
+4. **Layout komponenter** - Header, sidebar, main content areas
+
+## Core Functionality (Bygges som atomære enheter)
+5. **Task management** - CRUD operasjoner for oppgaver (kan testes isolert)
+6. **User switching** - Grunnleggende brukerkontext og PIN-system
+7. **Task completion** - Markere oppgaver som fullført (enkelt å teste)
+8. **Approval workflow** - Foreldre godkjenning med visual feedback
+
+## Engagement Layer (Bygger på core functionality)
+9. **Streak calculation** - Automatisk beregning basert på task completions
+10. **Reward system** - Koble belønninger til streak/completion data
+11. **Family points** - Utvidelse av existing point system til familienivå
+12. **Allowance tracking** - Beregning basert på eksisterende completion data
+
+## Polish & Administration (Siste lag)
+13. **Dashboard aggregation** - Sammenstille data fra alle systemer
+14. **Admin interface** - Konfigurering av eksisterende data
+15. **Data management** - Backup/restore av komplett datasett
+16. **Holiday periods** - Utvidelse av streak-systemet
+
+## Progression Philosophy
+- **Week 1-2:** Foundation + Core (items 1-8) = Fungerende app
+- **Week 3-4:** Engagement (items 9-12) = Motiverende app  
+- **Week 5-6:** Polish (items 13-16) = Produksjonsklar app
+
+Hver feature er bygget som en isolert modul som kan testes uavhengig, men som integrerer sømløst med eksisterende funksjoner.
+
+# Risks and Mitigations
+
+## Technical Challenges
+
+### State Management Complexity
+**Risiko:** Kompleks state mellom familiemedlemmer, oppgaver, streaks og belønninger.
+**Mitigering:** Start med Zustand for enkel state management, bruk normaliserte datastrukturer, implementer clear separation of concerns.
+
+### Performance med Store Datasett
+**Risiko:** App blir treg med mange oppgaver og lang historikk.
+**Mitigering:** Implementer pagination, lazy loading, og data purging strategies. Optimaliser re-renders med React.memo og useMemo.
+
+### Browser Compatibility
+**Risiko:** localStorage og moderne JS features fungerer ikke på eldre browsere.
+**Mitigering:** Graceful degradation, feature detection, polyfills for kritiske features.
+
+## MVP Definition & Scope Creep
+
+### Feature Overload
+**Risiko:** Prøve å implementere for mange features i MVP.
+**Mitigering:** Strikt fokus på core user journey: opprett oppgave → fullfør → godkjenn → se streak. Alt annet er nice-to-have.
+
+### Perfect UI Syndrome
+**Risiko:** Bruke for mye tid på design i stedet for funksjonalitet.
+**Mitigering:** Bruke shadcn/ui for rask, god-nok design. Fokuser på brukeropplevelse over visuell perfeksjon.
+
+### Premature Backend Development
+**Risiko:** Starte med backend før frontend er validert.
+**Mitigering:** Fullstendig frontend med mock data først. Valider konsept med ekte familier før backend-investering.
+
+## Resource Constraints
+
+### Single Developer Bottleneck
+**Risiko:** En person må håndtere design, frontend, backend, testing.
+**Mitigering:** Bruke verktøy som reduserer workload (shadcn/ui, Supabase, Vercel). Prioritere MVP features sterkt.
+
+### Family Testing Availability
+**Risiko:** Vanskelig å få ekte familier til å teste produktet.
+**Mitigering:** Start med egen familie, utvid til venner/bekjente, incentiviser med gratis premium features.
+
+### Technical Skill Gaps
+**Risiko:** Mangler erfaring med React/state management/deployment.
+**Mitigering:** Følge veletablerte patterns, bruke dokumentasjon ekstensivt, bygge enkle prototyper først.
+
+## Success Metrics & Validation
+
+### User Engagement
+- Daglig aktive familier etter 30 dager
+- Gjennomsnittlig oppgaver fullført per dag
+- Streak-lengder over tid
+
+### Product-Market Fit
+- Familier som fortsetter å bruke appen etter initial entusiasme
+- Organisk vekst gjennom word-of-mouth
+- Feedback på core value proposition
+
+# Appendix
+
+## Research Findings
+
+### Family Dynamics
+- Barn responderer best på umiddelbar feedback og visuelle belønninger
+- Foreldre verdsetter oversikt og redusert "nag factor"
+- Streaks er effektive motivatorer, men må ha "emergency breaks" for sykdom/ferie
+- Lommepenger øker engagement betydelig hos barn over 8 år
+
+### Technical Considerations
+- Web-first er riktig for familiekontekst (felles datamaskiner/tablets)
+- localStorage er tilstrekkelig for MVP validation
+- Real-time sync blir viktig når flere bruker systemet samtidig
+- Mobile responsiveness er nice-to-have, ikke kritisk for MVP
+
+### Competitive Analysis
+- Eksisterende løsninger er enten for komplekse (Todoist) eller for enkle (basic todo apps)
+- Ingen fokuserer spesifikt på familiedynamikk og barnemotivasjon
+- Mangler integration mellom oppgaver og belønninger/lommepenger
+
+## Technical Specifications
+
+### Browser Support
+- Chrome 90+ (primary target)
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+### Performance Targets
+- Initial page load < 2 sekunder
+- Task completion feedback < 100ms
+- Dashboard refresh < 500ms
+
+### Security Requirements
+- PIN-koder hashet med bcrypt
+- Ingen sensitiv data i localStorage
+- HTTPS required for production
+- Input sanitization for all user data
+
+### Accessibility Standards
+- WCAG 2.1 AA compliance
+- Keyboard navigation for all features
+- Screen reader compatibility
+- High contrast mode support

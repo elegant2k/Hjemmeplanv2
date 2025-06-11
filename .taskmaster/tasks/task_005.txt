@@ -1,0 +1,69 @@
+# Task ID: 5
+# Title: Develop Task Management System
+# Status: done
+# Dependencies: 2, 3
+# Priority: high
+# Description: Create the complete task management system with CRUD operations, assignment capabilities, and frequency settings.
+# Details:
+1. Create TaskForm component for adding/editing tasks:
+```typescript
+interface TaskFormProps {
+  initialData?: Task;
+  familyId: string;
+  onSubmit: (task: Omit<Task, 'id'>) => void;
+  onCancel: () => void;
+}
+```
+
+2. Implement TaskList component with filtering and sorting
+3. Create TaskItem component with status indicators
+4. Implement task assignment functionality (assign to family member)
+5. Add frequency selection (daily, weekly, monthly, once)
+6. Create point and allowance amount fields
+7. Implement task activation/deactivation toggle
+8. Add task description/details expandable section
+9. Create batch operations (assign multiple tasks, delete multiple)
+10. Implement drag-and-drop for task reordering (optional)
+11. Add task templates for common household chores
+
+# Test Strategy:
+1. Test CRUD operations for tasks
+2. Verify task assignment to different family members
+3. Test frequency settings and their effect on task visibility
+4. Verify point calculations
+5. Test task filtering and sorting
+6. Verify form validation for required fields
+7. Test batch operations
+8. Verify task status updates correctly
+
+# Subtasks:
+## 1. Implement TaskForm Component [done]
+### Dependencies: None
+### Description: Create a form component for adding and editing tasks with all required fields including title, description, points, allowance amount, and frequency settings.
+### Details:
+Build a React component that accepts the TaskFormProps interface. Include form fields for task title, description, point value, allowance amount, and frequency selection (daily, weekly, monthly, one-time). Implement form validation to ensure required fields are completed. Add submit and cancel handlers that connect to the provided props callbacks. Style the form using the application's design system.
+
+## 2. Develop TaskList and TaskItem Components [done]
+### Dependencies: None
+### Description: Create components to display and interact with tasks, including list view with filtering/sorting capabilities and individual task items with status indicators.
+### Details:
+Implement TaskList as a container component that fetches and displays tasks. Add filter controls for status, assignee, and frequency. Implement sorting by due date, points, and title. Create the TaskItem component to display individual tasks with visual status indicators, showing assignment status, completion status, and due date. Include an expandable section for task details. Both components should use the application's design system for consistent styling.
+
+## 3. Implement Task Assignment Functionality [done]
+### Dependencies: None
+### Description: Create the system for assigning tasks to family members, including UI controls and data management.
+### Details:
+Add a user selection dropdown in the TaskForm for assigning tasks to family members. Fetch family member data from the backend. Update the TaskItem component to display assignee information. Implement the ability to reassign tasks from the task list view. Create the necessary API calls to update task assignments in the database. Add visual indicators showing assignment status.
+
+## 4. Add Task Activation Controls and Batch Operations [done]
+### Dependencies: None
+### Description: Implement functionality to activate/deactivate tasks and add support for batch operations on multiple tasks.
+### Details:
+Add a toggle switch to TaskItem for activating/deactivating tasks. Update the TaskList to show activation status and allow filtering by it. Implement multi-select functionality in the TaskList with checkboxes. Create a batch operations toolbar that appears when multiple tasks are selected. Implement batch assignment, activation/deactivation, and deletion operations. Add confirmation dialogs for destructive actions.
+
+## 5. Implement Task Templates and Frequency Settings [done]
+### Dependencies: None
+### Description: Create a system for task templates and implement comprehensive frequency settings for recurring tasks.
+### Details:
+Build a library of common household task templates (cleaning, homework, pet care, etc.). Implement a template selector in the TaskForm. Enhance the frequency settings to include specific days for weekly tasks, dates for monthly tasks, and custom recurrence patterns. Add a visual calendar view to show upcoming task instances based on frequency. Implement the backend logic to generate task instances based on frequency settings.
+
